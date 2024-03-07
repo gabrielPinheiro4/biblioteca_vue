@@ -6,7 +6,8 @@
             </div>
         </div>
 
-        <form action="" class="form mt-3">
+        <div class="row align-items-center mt-5 flex-wrap">
+            <form action="" class=" col-6 form mt-3">
             <div class="row align-items-end">
                 <div class="col">
                     <label for="pesquisar" class="form-label">Buscar livro</label>
@@ -19,20 +20,25 @@
             </div>
         </form>
 
-        <form action="" class="form-2 mt-5">
-            <h2>Filtrar por data</h2>
-            <div class="row">
+        <form action="" class="col-6 form-2">
+            <h4>Filtrar por data de lançamento</h4>
+            <div class="row align-items-end">
                 <div class="col">
-                    <label for="data_minima">Data Mínima</label>
-                    <input type="date" id="data_minima" class="form-control">
+                    <label for="data_minima">Ano Mínimo</label>
+                    <input ref="dataMinima" type="number" id="data_minima" class="form-control">
                 </div>
 
                 <div class="col">
-                    <label for="data_minima">Data Máxima</label>
-                    <input type="date" id="data_maxima" class="form-control">
+                    <label for="data_minima">Ano Máximo</label>
+                    <input ref="dataMaxima" type="number" id="data_maxima" class="form-control">
+                </div>
+
+                <div class="col">
+                    <button @click.prevent="filtrarData()" class="btn btn-primary">Filtrar por data</button>
                 </div>
             </div>
         </form>
+        </div>
 
         <table class="table mt-5">
             <thead>
@@ -55,6 +61,16 @@
                 </tr>
             </tbody>
 
+            <tbody v-else-if="livroFiltrado.length > 0">
+                <tr v-for="livro in livroFiltrado" :key="livro">
+                    <td>{{ livro.titulo }}</td>
+                    <td>{{ livro.autor }}</td>
+                    <td>{{ livro.genero }}</td>
+                    <td>{{ livro.data }}</td>
+                    <td>{{ livro.quantidade }}</td>
+                </tr>
+            </tbody>
+
             <tbody v-else>
                 <tr v-for="livro in livros" :key="livro">
                     <td>{{ livro.titulo }}</td>
@@ -71,6 +87,7 @@
 
 <script>
 import { ref } from 'vue'
+import { removeAcentos } from '@/funcoes'
 
 export default {
   name: 'SearchBook',
@@ -78,7 +95,10 @@ export default {
   setup () {
     const livros = JSON.parse(localStorage.getItem('livros'))
     const livroBuscadoInput = ref(null)
+    const dataMinima = ref(null)
+    const dataMaxima = ref(null)
     const livroBuscado = ref({})
+    const livroFiltrado = ref([])
     const renderizar = ref(false)
     const ehVazio = ref(true)
 
@@ -92,22 +112,49 @@ export default {
         ehVazio.value = false
 
         for (const livro of livros) {
-          const tituloNormalize = livro.titulo.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+          const tituloNormalize = removeAcentos(livro.titulo)
+          const buscaNormalize = removeAcentos(busca)
 
-          if (tituloNormalize.toLowerCase().includes(busca.toLowerCase()) && busca !== '') {
+          if (tituloNormalize.toLowerCase().includes(buscaNormalize.toLowerCase()) && busca !== '') {
             livroBuscado.value = livro
           }
         }
       }
     }
 
+    function filtrarData () {
+      if (dataMaxima.value.value > 0 && dataMinima.value.value > 0) {
+        const livroFiltradoFilter = livros.filter((livro) => {
+          return parseInt(livro.data.split('-')[0]) <= dataMaxima.value.value && parseInt(livro.data.split('-')[0]) >= dataMinima.value.value
+        })
+
+        livroFiltrado.value = livroFiltradoFilter
+      } else if (dataMinima.value.value > 0 && dataMaxima.value.value <= 0) {
+        const livroFiltradoFilter = livros.filter((livro) => {
+          return parseInt(livro.data.split('-')[0]) >= dataMinima.value.value
+        })
+
+        livroFiltrado.value = livroFiltradoFilter
+      } else {
+        const livroFiltradoFilter = livros.filter((livro) => {
+          return parseInt(livro.data.split('-')[0]) <= dataMaxima.value.value
+        })
+
+        livroFiltrado.value = livroFiltradoFilter
+      }
+    }
+
     return {
       livros,
       livroBuscadoInput,
+      dataMinima,
+      dataMaxima,
       livroBuscado,
+      livroFiltrado,
       renderizar,
       ehVazio,
-      buscarLivro
+      buscarLivro,
+      filtrarData
     }
   }
 }
