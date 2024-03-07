@@ -62,11 +62,47 @@
     </div>
 
 </form>
+
+<div class="row mt-5">
+  <div class="row">
+    <div class="col">
+      <h4>Cadastrar em Lote</h4>
+    </div>
+  </div>
+    <form action="" class="row form-2 mt-2 align-items-end">
+      <div class="col">
+        <label for="arquivo">Selecione o arquivo</label>
+        <input ref="arquivo" type="file" class="form-control" id="arquivo">
+      </div>
+
+      <div class="col">
+        <button @click.prevent="cadastrarLote()"  data-bs-toggle="modal" data-bs-target="#modalLote" class="btn btn-primary">Cadastrar em Lote</button>
+
+        <div class="modal fade" id="modalLote" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Livros cadastrados com sucesso</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                Seus livros foram cadastrados, você pode verifica-los na página "Consultar Livros"
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fechar</button>
+              </div>
+            </div>
+          </div>
+      </div>
+      </div>
+  </form>
+</div>
 </div>
 </template>
 
 <script>
 import { ref } from 'vue'
+import * as d3 from 'd3'
 
 export default {
   name: 'RegisterBook',
@@ -77,6 +113,8 @@ export default {
     const generoLivro = ref('')
     const dataLivro = ref('')
     const quantidadeLivro = ref('')
+    const arquivo = ref(null)
+    const dadosCsv = ref([])
 
     let storage = JSON.parse(localStorage.getItem('livros'))
 
@@ -97,13 +135,43 @@ export default {
       localStorage.setItem('livros', JSON.stringify(storage))
     }
 
+    function cadastrarLote () {
+      const arquivoEnviado = arquivo.value.files[0]
+      const reader = new FileReader()
+
+      reader.onload = function (elemento) {
+        const csv = d3.csvParse(elemento.target.result)
+        const csvArray = JSON.parse(JSON.stringify(csv))
+
+        for (const livro of csvArray) {
+          dadosCsv.value.push({
+            titulo: livro.titulo,
+            autor: livro.autor,
+            genero: livro.genero,
+            data: livro.data,
+            quantidade: livro.quantidade
+          })
+        }
+
+        for (const livro of dadosCsv.value) {
+          storage.push(livro)
+        }
+
+        localStorage.setItem('livros', JSON.stringify(storage))
+      }
+      reader.readAsText(arquivoEnviado)
+    }
+
     return {
       cadastrarLivro,
+      cadastrarLote,
       nomeLivro,
       autorLivro,
       generoLivro,
       dataLivro,
-      quantidadeLivro
+      quantidadeLivro,
+      arquivo,
+      dadosCsv
     }
   }
 }
