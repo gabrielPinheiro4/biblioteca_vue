@@ -69,6 +69,14 @@
       <h4>Cadastrar em Lote</h4>
     </div>
   </div>
+
+  <div class="col">
+        <div class="alert alert-danger" role="alert">
+          Para cadastrar em lote você deve enviar um arquivo csv contendo as colunas: titulo, autor, genero, data(Y-m-d) e quantidade
+        </div>
+
+      </div>
+
     <form action="" class="row form-2 mt-2 align-items-end">
       <div class="col">
         <label for="arquivo">Selecione o arquivo</label>

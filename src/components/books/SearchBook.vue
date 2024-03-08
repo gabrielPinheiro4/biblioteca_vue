@@ -1,12 +1,12 @@
 <template>
-    <div class="procurar_livros container">
+    <div class="procurar_livros container py-5">
         <div class="row">
             <div class="col">
                 <h1>Buscar livros</h1>
             </div>
         </div>
 
-        <div class="row align-items-center mt-5 flex-wrap">
+        <div class="row align-items-center mt-3 flex-wrap">
             <form action="" class=" col-6 form mt-3">
             <div class="row align-items-end">
                 <div class="col">
@@ -58,6 +58,7 @@
                     <td>{{ livroBuscado.genero }}</td>
                     <td>{{ livroBuscado.data }}</td>
                     <td>{{ livroBuscado.quantidade }}</td>
+                    <td><button @click="deletarLinha($event)" type="button" class="btn btn-danger">Deletar</button></td>
                 </tr>
             </tbody>
 
@@ -68,16 +69,18 @@
                     <td>{{ livro.genero }}</td>
                     <td>{{ livro.data }}</td>
                     <td>{{ livro.quantidade }}</td>
+                    <td><button @click="deletarLinha($event)" type="button" class="btn btn-danger">Deletar</button></td>
                 </tr>
             </tbody>
 
             <tbody v-else>
-                <tr v-for="livro in livros" :key="livro">
+                <tr ref="linhaAll" v-for="livro in livros" :key="livro">
                     <td>{{ livro.titulo }}</td>
                     <td>{{ livro.autor }}</td>
                     <td>{{ livro.genero }}</td>
                     <td>{{ livro.data }}</td>
                     <td>{{ livro.quantidade }}</td>
+                    <td><button @click="deletarLinha($event)" type="button" class="btn btn-danger">Deletar</button></td>
                 </tr>
             </tbody>
         </table>
@@ -95,6 +98,7 @@ export default {
   setup () {
     const livros = JSON.parse(localStorage.getItem('livros'))
     const livroBuscadoInput = ref(null)
+    const linhaAll = ref(null)
     const dataMinima = ref(null)
     const dataMaxima = ref(null)
     const livroBuscado = ref({})
@@ -144,17 +148,34 @@ export default {
       }
     }
 
+    function deletarLinha (event) {
+      const textElement = event.target.parentElement.parentElement.childNodes[0].outerText
+
+      const livroSelecionado = livros.filter((livro) => {
+        return livro.titulo === textElement
+      })
+
+      const indexRemove = livros.indexOf(livroSelecionado[0])
+
+      livros.splice(indexRemove, 1)
+      localStorage.setItem('livros', JSON.stringify(livros))
+
+      window.location.reload()
+    }
+
     return {
       livros,
       livroBuscadoInput,
       dataMinima,
+      linhaAll,
       dataMaxima,
       livroBuscado,
       livroFiltrado,
       renderizar,
       ehVazio,
       buscarLivro,
-      filtrarData
+      filtrarData,
+      deletarLinha
     }
   }
 }
