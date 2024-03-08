@@ -90,12 +90,10 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Livros cadastrados com sucesso</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">{{ tituloModal }}</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div class="modal-body">
-                Seus livros foram cadastrados, você pode verifica-los na página "Consultar Livros"
-              </div>
+              <div class="modal-body">{{ descModal }}</div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fechar</button>
               </div>
@@ -109,6 +107,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import { ref } from 'vue'
 import * as d3 from 'd3'
 
@@ -116,21 +115,42 @@ export default {
   name: 'RegisterBook',
 
   setup () {
+    // Variavel para o input titulo
     const nomeLivro = ref('')
+
+    // Variaveis para guardar uma mensagem no modal
+    const tituloModal = ref('')
+    const descModal = ref('')
+
+    // Variavel para o input autor
     const autorLivro = ref('')
+
+    // Variavel para o input genero
     const generoLivro = ref('')
+
+    // Variavel para o input data
     const dataLivro = ref('')
+
+    // Variavel para o input quantidade
     const quantidadeLivro = ref('')
+
+    // Variavel para o input file
     const arquivo = ref(null)
+
+    // Variavel para os dados do arquivo enviado
     const dadosCsv = ref([])
 
+    // Armazena os dados do local storage numa variavel
     let storage = JSON.parse(localStorage.getItem('livros'))
 
+    // Se o valor de local storage for nulo, storage recebe um array vazio
     if (storage === null) {
       storage = []
     }
 
     function cadastrarLivro () {
+
+      // Cria um objeto a partir dos dados digitados nos inputs
       const novosDados = {
         titulo: nomeLivro.value,
         autor: autorLivro.value,
@@ -139,7 +159,10 @@ export default {
         quantidade: quantidadeLivro.value
       }
 
+      // Adiciona os objetos no array
       storage.push(novosDados)
+
+      // Atualiza o local storage
       localStorage.setItem('livros', JSON.stringify(storage))
     }
 
@@ -147,27 +170,46 @@ export default {
       const arquivoEnviado = arquivo.value.files[0]
       const reader = new FileReader()
 
-      reader.onload = function (elemento) {
-        const csv = d3.csvParse(elemento.target.result)
-        const csvArray = JSON.parse(JSON.stringify(csv))
+      // Entra se a extensão do arquivo for diferente de .csv
+      if (arquivoEnviado.name.split('.')[1] !== 'csv') {
 
-        for (const livro of csvArray) {
-          dadosCsv.value.push({
-            titulo: livro.titulo,
-            autor: livro.autor,
-            genero: livro.genero,
-            data: livro.data,
-            quantidade: livro.quantidade
-          })
+        // Adiciona uma mensagem de erro no modal
+        tituloModal.value = 'Arquivo não permitido'
+        descModal.value = 'O arquivo que você está tentando enviar não é suportado pelo sistema, tente enviar um arquivo csv'
+
+      } else {
+
+        // Adiciona uma mensagem de sucesso no modal
+        tituloModal.value = 'Livros cadastrados com sucesso'
+        descModal.value = 'Seus livros foram cadastrados, você pode verifica-los na página "Consultar Livros"'
+
+        reader.onload = function (elemento) {
+          const csv = d3.csvParse(elemento.target.result)
+
+          // Converte o csv enviado em string, depois converte para objeto
+          const csvArray = JSON.parse(JSON.stringify(csv))
+
+          // Cria um objeto para cada livro enviado e adiciona no array
+          for (const livro of csvArray) {
+            dadosCsv.value.push({
+              titulo: livro.titulo,
+              autor: livro.autor,
+              genero: livro.genero,
+              data: livro.data,
+              quantidade: livro.quantidade
+            })
+          }
+
+          // Adicione os novos livros no array storage
+          for (const livro of dadosCsv.value) {
+            storage.push(livro)
+          }
+
+          // Adiciona os novos itens no local storage
+          localStorage.setItem('livros', JSON.stringify(storage))
         }
-
-        for (const livro of dadosCsv.value) {
-          storage.push(livro)
-        }
-
-        localStorage.setItem('livros', JSON.stringify(storage))
+        reader.readAsText(arquivoEnviado)
       }
-      reader.readAsText(arquivoEnviado)
     }
 
     return {
@@ -179,7 +221,9 @@ export default {
       dataLivro,
       quantidadeLivro,
       arquivo,
-      dadosCsv
+      dadosCsv,
+      tituloModal,
+      descModal
     }
   }
 }

@@ -89,6 +89,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import { ref } from 'vue'
 import { removeAcentos } from '@/funcoes'
 
@@ -96,13 +97,26 @@ export default {
   name: 'SearchBook',
 
   setup () {
+    
+    // Variavel que recebe os dados do local storage
     const livros = JSON.parse(localStorage.getItem('livros'))
+
+    // Variavel para o input de pequisa
     const livroBuscadoInput = ref(null)
-    const linhaAll = ref(null)
+
+    // Variavel para o input da data minima
     const dataMinima = ref(null)
+
+    // Variavel para o input da data maxima
     const dataMaxima = ref(null)
+
+    // Variavel para guardar os dados do livro buscado
     const livroBuscado = ref({})
+
+    // Variavel para guardar os dados do livro filtrado pela data
     const livroFiltrado = ref([])
+
+    // Caso
     const renderizar = ref(false)
     const ehVazio = ref(true)
 
@@ -110,16 +124,26 @@ export default {
       const busca = livroBuscadoInput.value.value
       renderizar.value = true
 
+      // Entra se o valor do input da busca for vazio
       if (busca === '') {
         ehVazio.value = true
+
       } else {
         ehVazio.value = false
 
         for (const livro of livros) {
+
+          // Remove o acento dos titulos dos livros
           const tituloNormalize = removeAcentos(livro.titulo)
+
+          // Remove o acento do valor do input da busca
           const buscaNormalize = removeAcentos(busca)
 
+          // Entra se o valor da busca estiver no titulo do livro e se o valor
+          // da busca não for vazio
           if (tituloNormalize.toLowerCase().includes(buscaNormalize.toLowerCase()) && busca !== '') {
+
+            // Variavel livroBuscado rece o livro que o usuario digitou 
             livroBuscado.value = livro
           }
         }
@@ -127,39 +151,67 @@ export default {
     }
 
     function filtrarData () {
+
+      // Entra se o valor do input da data maxima e data minima for maior que
+      // zero
       if (dataMaxima.value.value > 0 && dataMinima.value.value > 0) {
+
         const livroFiltradoFilter = livros.filter((livro) => {
-          return parseInt(livro.data.split('-')[0]) <= dataMaxima.value.value && parseInt(livro.data.split('-')[0]) >= dataMinima.value.value
+          const anoLivro = parseInt(livro.data.split('-')[0])
+
+          // Retorna os livros que estiverem entra as datas selecionadas
+          return anoLivro <= dataMaxima.value.value && anoLivro >= dataMinima.value.value
         })
 
         livroFiltrado.value = livroFiltradoFilter
+      
+      // Entra se o valor do inputa da data minima for maior que zero e o da
+      // data maxima for menor ou igual a zero
       } else if (dataMinima.value.value > 0 && dataMaxima.value.value <= 0) {
         const livroFiltradoFilter = livros.filter((livro) => {
-          return parseInt(livro.data.split('-')[0]) >= dataMinima.value.value
+          const anoLivro = parseInt(livro.data.split('-')[0])
+
+          // Retorna os livros que forem maiores ou iguais a data minima
+          return anoLivro >= dataMinima.value.value
         })
 
         livroFiltrado.value = livroFiltradoFilter
+
       } else {
         const livroFiltradoFilter = livros.filter((livro) => {
-          return parseInt(livro.data.split('-')[0]) <= dataMaxima.value.value
+          const anoLivro = parseInt(livro.data.split('-')[0])
+
+          // Retorna os livros que forem menores ou iguais a data maxima
+          return anoLivro <= dataMaxima.value.value
         })
 
         livroFiltrado.value = livroFiltradoFilter
+
       }
     }
 
     function deletarLinha (event) {
+
+      // Pega o titulo da linha que o usuario quer deletar
       const textElement = event.target.parentElement.parentElement.childNodes[0].outerText
 
       const livroSelecionado = livros.filter((livro) => {
+
+        // Retorna o livro armazenado no local storage que tiver o titulo igual
+        // ao titulo da linha que o usuario deseja deletar
         return livro.titulo === textElement
       })
 
+      // Pega o index do livro que o usuario deseja deletar
       const indexRemove = livros.indexOf(livroSelecionado[0])
 
+      // Remove o livro do array
       livros.splice(indexRemove, 1)
+
+      // Atualiza o local storage
       localStorage.setItem('livros', JSON.stringify(livros))
 
+      // Atualiza a pagina para ver as mudanças
       window.location.reload()
     }
 
@@ -167,7 +219,6 @@ export default {
       livros,
       livroBuscadoInput,
       dataMinima,
-      linhaAll,
       dataMaxima,
       livroBuscado,
       livroFiltrado,
