@@ -74,7 +74,7 @@
             </tbody>
 
             <tbody v-else>
-                <tr ref="linhaAll" v-for="livro in livros" :key="livro">
+                <tr v-for="livro in livros" :key="livro">
                     <td>{{ livro.titulo }}</td>
                     <td>{{ livro.autor }}</td>
                     <td>{{ livro.genero }}</td>
@@ -116,7 +116,6 @@ export default {
     // Variavel para guardar os dados do livro filtrado pela data
     const livroFiltrado = ref([])
 
-    // Caso
     const renderizar = ref(false)
     const ehVazio = ref(true)
 
