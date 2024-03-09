@@ -133,14 +133,14 @@ export default {
         for (const livro of livros) {
 
           // Remove o acento dos titulos dos livros
-          const tituloNormalize = removeAcentos(livro.titulo)
+          const tituloNormalize = removeAcentos(livro.titulo).toLowerCase()
 
           // Remove o acento do valor do input da busca
-          const buscaNormalize = removeAcentos(busca)
+          const buscaNormalize = removeAcentos(busca).toLowerCase()
 
           // Entra se o valor da busca estiver no titulo do livro e se o valor
           // da busca não for vazio
-          if (tituloNormalize.toLowerCase().includes(buscaNormalize.toLowerCase()) && busca !== '') {
+          if (tituloNormalize.includes(buscaNormalize) && busca !== '') {
 
             // Variavel livroBuscado rece o livro que o usuario digitou 
             livroBuscado.value = livro

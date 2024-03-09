@@ -11,10 +11,7 @@
             <router-link class="nav-link" to="/book">Livros</router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Features</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Pricing</a>
+            <router-link class="nav-link" to="/loan">Empréstimo/Devolução</router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/users">Usuários</router-link>

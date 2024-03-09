@@ -33,7 +33,24 @@
 
         <div class="row">
             <div class="col">
-                <button @click.prevent="cadastarUsuario()" class="btn btn-primary">Cadastrar</button>
+                <button @click.prevent="cadastarUsuario()" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-primary">Cadastrar</button>
+
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Usuário cadastrado com sucesso</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        O usuário foi cadastrado com sucesso, você pode verifica-lo na página "Consultar Usuários"
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fechar</button>
+                      </div>
+                    </div>
+                  </div>
+              </div>
             </div>
         </div>
     </div>
@@ -63,7 +80,8 @@ export default {
         usuario: usuarioInput.value,
         nome: nomeCompleto.value,
         endereco: enderecoInput.value,
-        cpf: cpfInput.value
+        cpf: cpfInput.value,
+        livrosEmprestimos: []
       }
 
       usuarios.push(novoUsuario)

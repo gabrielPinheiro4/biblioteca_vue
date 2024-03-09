@@ -15,7 +15,7 @@ import RegisterBook from '@/components/books/RegisterBook.vue'
 import SearchBook from '@/components/books/SearchBook.vue'
 
 export default {
-  name: 'TheBook',
+  name: 'BookView',
   components: {
     RegisterBook,
     SearchBook
