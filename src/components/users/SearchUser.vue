@@ -28,7 +28,7 @@
                     <th scope="col">Usuário</th>
                     <th scope="col">CPF</th>
                     <th scope="col">Endereço</th>
-                    <th scope="col">Livros emprestados</th>
+                    <th scope="col">Livros emprestados (Data de devolução)</th>
                 </tr>
             </thead>
 
@@ -38,18 +38,18 @@
                     <td>{{ usuarioBuscadoResult.nome }}</td>
                     <td>{{ usuarioBuscadoResult.cpf }}</td>
                     <td>{{ usuarioBuscadoResult.endereco }}</td>
-                    <td>{{ usuarioBuscadoResult.livrosEmprestimo }}</td>
+                    <td><span v-for="livro in usuarioBuscadoResult.livrosEmprestimos" :key="livro">{{ livro.titulo }}({{ livro.dataDevolucao }}), </span></td>
                     <td><button @click="deletarLinha($event)" type="button" class="btn btn-danger">Deletar</button></td>
                 </tr>
             </tbody>
 
             <tbody v-else>
                 <tr v-for="usuario in usuarios" :key="usuario">
-                    <td>{{ usuario.usuario }}</td>
                     <td>{{ usuario.nome }}</td>
+                    <td>{{ usuario.usuario }}</td>
                     <td>{{ usuario.cpf }}</td>
                     <td>{{ usuario.endereco }}</td>
-                    <td>{{ usuario.livrosEmprestimo }}</td>
+                    <td><span v-for="livro in usuario.livrosEmprestimos" :key="livro">{{ livro.titulo }}({{ livro.dataDevolucao }}) - </span></td>
                     <td><button @click="deletarLinha($event)" type="button" class="btn btn-danger">Deletar</button></td>
                 </tr>
             </tbody>
@@ -74,6 +74,7 @@ export default {
     const usuarioBuscadoResult = ref({})
 
     function buscarUsuario () {
+      console.log(usuarios[0].livrosEmprestimos)
       const nomeBuscado = nomeBuscadoInput.value.value
       renderizar.value = true
 
@@ -91,8 +92,6 @@ export default {
             usuarioBuscadoResult.value = usuario
           }
         }
-
-
       }
     }
 

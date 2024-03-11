@@ -80,7 +80,7 @@ export default {
       const livroSelecionado = livros.filter((livro) => {
         const tituloNormalize = removeAcentos(livro.titulo).toLowerCase()
         
-        return tituloNormalize.includes(livroEmprestimo) 
+        return tituloNormalize.includes(livroEmprestimo)
       })
 
       const usuarioSelecionado = usuarios.filter((usuario) => {
@@ -89,25 +89,45 @@ export default {
         return nomeUserNormalize.includes(cliente)
       })
 
+      let qnt = parseInt(livroSelecionado[0].quantidade)
+
       if (livroSelecionado.length <= 0 || usuarioSelecionado.length <= 0) {
-        tituloModal.value = 'Livro ou usuário não encontrao'
+        tituloModal.value = 'Livro ou usuário não encontrado'
 
         mensagemModal.value = 'O livro ou usuário que você digitou não consta '+
                               'no sistema, verifique novamente os dados digitados'
 
+      } else if (qnt <= 0) {
+        tituloModal.value = 'Livro indisponível'
+
+        mensagemModal.value = 'O livro não tem quantidade suficiente para '+
+                              'realizar um empréstimo'
+
       } else {
         tituloModal.value = 'Empréstimo feito com sucesso'
 
-        mensagemModal.value = `Emprestimo feito com sucesso, o(a) ` + 
-                              `${usuarioSelecionado[0].nome} deve devolver o ` +
-                              `livro ${livroSelecionado[0].titulo} até ` +
+        mensagemModal.value = `Empréstimo feito com sucesso, o(a) `+
+                              `${usuarioSelecionado[0].nome} deve devolver o `+
+                              `livro ${livroSelecionado[0].titulo} até `+
                               `${dataD}` 
 
-        usuarioSelecionado[0].livrosEmprestimos.push(livroSelecionado[0])
-        localStorage.setItem('usuarios', JSON.stringify(usuarios))
-      }
+        qnt -= 1
 
-      
+        const novoLivro = Object.assign(
+          {}, livroSelecionado[0], {dataDevolucao: dataD}
+        )
+
+        const livroAtt = Object.assign(
+          {}, livroSelecionado[0], {quantidade: qnt.toString()}
+        )
+
+        livros.splice(livros.indexOf(livroSelecionado[0]), 1, livroAtt)
+
+        usuarioSelecionado[0].livrosEmprestimos.push(novoLivro)
+
+        localStorage.setItem('usuarios', JSON.stringify(usuarios))
+        localStorage.setItem('livros', JSON.stringify(livros))
+      }
     }
 
     return {
