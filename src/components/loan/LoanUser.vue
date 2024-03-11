@@ -30,7 +30,24 @@
 
             <div class="row">
                 <div class="col">
-                    <button @click.prevent="fazerEmprestimo()" class="btn btn-primary">Fazer Emprestimo</button>
+                    <button @click.prevent="fazerEmprestimo()" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-primary">Fazer Emprestimo</button>
+
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">{{ tituloModal }}</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            {{ mensagemModal }}
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fechar</button>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
                 </div>
             </div>
         </form>
@@ -53,7 +70,7 @@ export default {
     const nomeLivro = ref(null)
     const dataDevolucao = ref(null)
     const tituloModal = ref('')
-    const mesagemModal = ref('')
+    const mensagemModal = ref('')
 
     function fazerEmprestimo () {
       const cliente = removeAcentos(nomeCliente.value.value).toLowerCase()
@@ -72,9 +89,22 @@ export default {
         return nomeUserNormalize.includes(cliente)
       })
 
-      if (livroSelecionado.length === 0) {
-        tituloModal.value = 'Livro não encontrao'
-        mesagemModal.value = 'O livro que você digitou não consta no sistema, verifique o nome ou cadastre um novo livro'
+      if (livroSelecionado.length <= 0 || usuarioSelecionado.length <= 0) {
+        tituloModal.value = 'Livro ou usuário não encontrao'
+
+        mensagemModal.value = 'O livro ou usuário que você digitou não consta '+
+                              'no sistema, verifique novamente os dados digitados'
+
+      } else {
+        tituloModal.value = 'Empréstimo feito com sucesso'
+
+        mensagemModal.value = `Emprestimo feito com sucesso, o(a) ` + 
+                              `${usuarioSelecionado[0].nome} deve devolver o ` +
+                              `livro ${livroSelecionado[0].titulo} até ` +
+                              `${dataD}` 
+
+        usuarioSelecionado[0].livrosEmprestimos.push(livroSelecionado[0])
+        localStorage.setItem('usuarios', JSON.stringify(usuarios))
       }
 
       
@@ -86,7 +116,7 @@ export default {
       nomeCliente,
       nomeLivro,
       tituloModal,
-      mesagemModal,
+      mensagemModal,
       dataDevolucao,
       fazerEmprestimo
     }
