@@ -72,6 +72,10 @@ export default {
     const tituloModal = ref('')
     const mensagemModal = ref('')
 
+    const tituloModalError = 'Livro ou usuário não encontrado'
+    const descModalError = 'O livro ou usuário que você digitou não consta ' +
+                           'no sistema, verifique novamente os dados digitados'
+
     function fazerEmprestimo () {
       const cliente = removeAcentos(nomeCliente.value.value).toLowerCase()
       const livroEmprestimo = removeAcentos(nomeLivro.value.value).toLowerCase()
@@ -89,15 +93,11 @@ export default {
         return nomeUserNormalize.includes(cliente)
       })
 
-      let qnt = parseInt(livroSelecionado[0].quantidade)
-
       if (livroSelecionado.length <= 0 || usuarioSelecionado.length <= 0) {
-        tituloModal.value = 'Livro ou usuário não encontrado'
+        tituloModal.value = tituloModalError
+        mensagemModal.value = descModalError
 
-        mensagemModal.value = 'O livro ou usuário que você digitou não consta '+
-                              'no sistema, verifique novamente os dados digitados'
-
-      } else if (qnt <= 0) {
+      } else if (parseInt(livroSelecionado[0].quantidade) <= 0) {
         tituloModal.value = 'Livro indisponível'
 
         mensagemModal.value = 'O livro não tem quantidade suficiente para '+
@@ -111,6 +111,7 @@ export default {
                               `livro ${livroSelecionado[0].titulo} até `+
                               `${dataD}` 
 
+        let qnt = parseInt(livroSelecionado[0].quantidade)
         qnt -= 1
 
         const novoLivro = Object.assign(
@@ -135,6 +136,8 @@ export default {
       usuarios,
       nomeCliente,
       nomeLivro,
+      tituloModalError,
+      descModalError,
       tituloModal,
       mensagemModal,
       dataDevolucao,
