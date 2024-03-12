@@ -24,7 +24,7 @@
 
             <div class="row">
                 <div class="col">
-                    <button @click.prevent="fazerDevolucao()" class="btn btn-primary">Fazer devolução</button>
+                    <button @click.prevent="fazerDevolucao()" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-primary">Fazer devolução</button>
 
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog">
@@ -86,21 +86,26 @@ export default {
         return clienteSemAcento.includes(cliente)
       })
 
-      for (const livro of clienteSelecionado[0].livrosEmprestimos) {
-        const tituloSemAcento = removeAcentos(livro.titulo).toLowerCase()
-
-        if (tituloSemAcento.includes(livroDevolucao)) {
-            livroSelecionadoDevolucao = livro
-        }
-      }
-
       if (livroSelecionado.length <= 0 || clienteSelecionado.length <= 0) {
         tituloModal.value = tituloModalError
         mensagemModal.value = descModalError
 
       } else {
+        tituloModal.value = 'Devolução feita com sucesso'
+        mensagemModal.value = `A devolução foi feita com sucesso, o livro` +
+                              `${livroSelecionado[0].titulo} foi adicionado` +
+                              `ao estoque`
+
+        for (const livro of clienteSelecionado[0].livrosEmprestimos) {
+          const tituloSemAcento = removeAcentos(livro.titulo).toLowerCase()
+
+          if (tituloSemAcento.includes(livroDevolucao)) {
+              livroSelecionadoDevolucao = livro
+        }
+      }
+
         let qnt = parseInt(livroSelecionado[0].quantidade)
-        qnt -= 1
+        qnt += 1
 
         const livroAtt = Object.assign(
           {}, livroSelecionado[0], {quantidade: qnt.toString()}
@@ -114,14 +119,13 @@ export default {
             indexLivroDevolucao, 1
         )
 
-        // usuarios.splice(
-        //     usuarios.indexOf(clienteSelecionado[0]), novoCliente
-        // )
+        livros.splice(
+            livros.indexOf(livroSelecionado[0]), 1, livroAtt
+        )
 
-        // console.log(usuarios)
+        localStorage.setItem('usuarios', JSON.stringify(usuarios))
+        localStorage.setItem('livros', JSON.stringify(livros))
       }
-
-
     }
 
     return {
