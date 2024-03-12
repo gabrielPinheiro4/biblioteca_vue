@@ -10,43 +10,95 @@
         <div class="row mt-5">
             <div class="col mb-3">
                 <label for="nomeCompleto">Nome Completo</label>
-                <input v-model="nomeCompleto" type="text" id="nomeCompleto" class="form-control">
+
+                <input
+                v-model="nomeCompleto"
+                type="text"
+                id="nomeCompleto"
+                class="form-control">
+
             </div>
 
             <div class="col mb-3">
                 <label for="usuario">Usuário</label>
-                <input v-model="usuarioInput" type="text" id="usuario" class="form-control">
+
+                <input
+                v-model="usuarioInput"
+                type="text"
+                id="usuario"
+                class="form-control">
+
             </div>
         </div>
 
         <div class="row mb-3">
             <div class="col mb-3">
                 <label for="cpf">CPF</label>
-                <input v-model="cpfInput" type="text" id="cpf" class="form-control">
+
+                <input
+                v-model="cpfInput"
+                type="text" id="cpf"
+                class="form-control">
+
             </div>
 
             <div class="col">
                 <label for="endereco">Endereço</label>
-                <input v-model="enderecoInput" type="text" id="endereco" class="form-control">
+
+                <input
+                v-model="enderecoInput"
+                type="text"
+                id="endereco"
+                class="form-control">
+
             </div>
         </div>
 
         <div class="row">
             <div class="col">
-                <button @click.prevent="cadastarUsuario()" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-primary">Cadastrar</button>
 
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <button
+                @click.prevent="cadastarUsuario()"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+                class="btn btn-primary">Cadastrar
+                </button>
+
+                <div
+                class="modal fade"
+                id="exampleModal"
+                tabindex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Usuário cadastrado com sucesso</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                        <h1
+                        class="modal-title fs-5"
+                        id="exampleModalLabel">{{ tituloModal }}
+                        </h1>
+
+                        <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                        </button>
+
                       </div>
                       <div class="modal-body">
-                        O usuário foi cadastrado com sucesso, você pode verifica-lo na página "Consultar Usuários"
+                        {{ mensagemModal }}
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fechar</button>
+
+                        <button
+                        type="button"
+                        class="btn btn-primary"
+                        data-bs-dismiss="modal">Fechar
+                        </button>
+
                       </div>
                     </div>
                   </div>
@@ -58,6 +110,7 @@
     </template>
 
 <script>
+/* eslint-disable */
 import { ref } from 'vue'
 
 export default {
@@ -68,6 +121,8 @@ export default {
     const usuarioInput = ref('')
     const enderecoInput = ref('')
     const cpfInput = ref('')
+    const tituloModal = ref('')
+    const mensagemModal = ref('')
 
     let usuarios = JSON.parse(localStorage.getItem('usuarios'))
 
@@ -76,17 +131,26 @@ export default {
     }
 
     function cadastarUsuario () {
-      const novoUsuario = {
-        usuario: usuarioInput.value,
-        nome: nomeCompleto.value,
-        endereco: enderecoInput.value,
-        cpf: cpfInput.value,
-        livrosEmprestimos: []
+      if (nomeCompleto.value === '' || usuarioInput.value === '' || enderecoInput.value === '' || cpfInput.value === '') {
+        tituloModal.value = 'Campos não preenchidos'
+        mensagemModal.value = 'Preencha todos os campos para cadastrar o usuario'
+
+      } else {
+        tituloModal.value = 'Usuário cadastrado com sucesso'
+        mensagemModal.value = 'O usuário foi cadastrado com sucesso, você pode verifica-lo na página "Consultar Usuários"'
+
+        const novoUsuario = {
+          usuario: usuarioInput.value,
+          nome: nomeCompleto.value,
+          endereco: enderecoInput.value,
+          cpf: cpfInput.value,
+          livrosEmprestimos: []
+        }
+
+        usuarios.push(novoUsuario)
+
+        localStorage.setItem('usuarios', JSON.stringify(usuarios))
       }
-
-      usuarios.push(novoUsuario)
-
-      localStorage.setItem('usuarios', JSON.stringify(usuarios))
     }
 
     return {
@@ -94,6 +158,8 @@ export default {
       usuarioInput,
       enderecoInput,
       cpfInput,
+      tituloModal,
+      mensagemModal,
       cadastarUsuario
     }
   }

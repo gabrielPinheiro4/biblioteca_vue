@@ -1,12 +1,12 @@
 <template>
-    <div class="users container">
-        <div class="decisao mt-3 d-flex justify-content-center gap-2">
-          <button @click="render = 'RegisterUser'" class="btn btn-dark">Cadastrar Usuários</button>
-            <button @click="render = 'SearchUser'" class="btn btn-dark">Consultar Usuários</button>
-        </div>
+  <div class="users container">
+    <div class="decisao mt-3 d-flex justify-content-center gap-2">
+      <button @click="render = 'RegisterUser'" class="btn btn-dark">Cadastrar Usuários</button>
+      <button @click="render = 'SearchUser'" class="btn btn-dark">Consultar Usuários</button>
+    </div>
 
   <component :is="render"></component>
-    </div>
+  </div>
 </template>
 
 <script>

@@ -1,24 +1,23 @@
-# biblioteca
+# Biblioteca Vue
+Seja bem vindo.
 
-## Project setup
+Este é um sistema de biblioteca feito com o objetivo de aprender o básico do Vue JS.
+
+# Ferramentas
+- Vue Js
+- Bootstrap
+
+## Instalar dependências do projeto
 ```
 yarn install
 ```
 
-### Compiles and hot-reloads for development
+### Rodar em modo de desenvolvimento
 ```
 yarn serve
 ```
 
-### Compiles and minifies for production
+### Rodar em modo de produção
 ```
 yarn build
 ```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

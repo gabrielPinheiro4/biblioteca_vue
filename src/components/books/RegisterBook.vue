@@ -9,44 +9,97 @@
     <div class="row mb-3">
         <div class="col">
           <label class="form-label" for="nome_livro">Nome do livro</label>
-          <input v-model="nomeLivro" type="text" class="form-control" id="nome_livro">
+
+          <input
+          v-model="nomeLivro"
+          type="text"
+          class="form-control"
+          id="nome_livro">
+
         </div>
 
         <div class="col">
           <label for="autor" class="form-label">Autor</label>
-          <input v-model="autorLivro" type="text" class="form-control" id="autor">
+
+          <input
+          v-model="autorLivro"
+          type="text"
+          class="form-control"
+          id="autor">
+
         </div>
     </div>
 
     <div class="row mb-3">
         <div class="col">
           <label for="genero" class="form-label">Gênero</label>
-          <input v-model="generoLivro" type="text" class="form-control" id="genero">
+
+          <input
+          v-model="generoLivro"
+          type="text"
+          class="form-control"
+          id="genero">
+
         </div>
 
         <div class="col">
           <label for="data" class="form-label">Data de lançamento</label>
-          <input v-model="dataLivro" type="date" class="form-control" id="data">
+
+          <input
+          v-model="dataLivro"
+          type="date"
+          class="form-control"
+          id="data">
+
         </div>
     </div>
 
     <div class="row mb-3">
         <div class="col-3">
           <label for="quantidade" class="form-label">Quantidade</label>
-          <input v-model="quantidadeLivro" type="number" class="form-control" id="quantidade">
+
+          <input
+          v-model="quantidadeLivro"
+          type="number"
+          class="form-control"
+          id="quantidade">
+
         </div>
     </div>
 
     <div class="row">
       <div class="col">
-        <button @click.prevent="cadastrarLivro()" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-primary">Cadastrar</button>
 
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <button
+        @click.prevent="cadastrarLivro()"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+        class="btn btn-primary">Cadastrar
+        </button>
+
+        <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Livro cadastrado com sucesso</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h1
+                class="modal-title fs-5"
+                id="exampleModalLabel">Livro cadastrado com sucesso
+                </h1>
+
+                <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close">
+                </button>
+
               </div>
               <div class="modal-body">
                 Seu livro foi cadastrado com sucesso, você pode verifica-lo na página "Consultar Livros"
@@ -115,26 +168,17 @@ export default {
   name: 'RegisterBook',
 
   setup () {
-    // Variavel para o input titulo
-    const nomeLivro = ref('')
 
     // Variaveis para guardar uma mensagem no modal
     const tituloModal = ref('')
     const descModal = ref('')
 
-    // Variavel para o input autor
+    // Variavel para os inputs formulario
     const autorLivro = ref('')
-
-    // Variavel para o input genero
     const generoLivro = ref('')
-
-    // Variavel para o input data
     const dataLivro = ref('')
-
-    // Variavel para o input quantidade
     const quantidadeLivro = ref('')
-
-    // Variavel para o input file
+    const nomeLivro = ref('')
     const arquivo = ref(null)
 
     // Variavel para os dados do arquivo enviado
@@ -149,21 +193,29 @@ export default {
     }
 
     function cadastrarLivro () {
+      if (nomeLivro.value === '' || autorLivro.value === '' || generoLivro.value === '' || quantidadeLivro.value === '' || dataLivro.value === '') {
+        tituloModal.value = 'Campos não preenchidos'
+        descModal.value = 'Preencha todos os campos para cadastrar o livro'
 
-      // Cria um objeto a partir dos dados digitados nos inputs
-      const novosDados = {
-        titulo: nomeLivro.value,
-        autor: autorLivro.value,
-        genero: generoLivro.value,
-        data: dataLivro.value,
-        quantidade: quantidadeLivro.value
+      } else {
+        tituloModal.value = 'Livros cadastrados com sucesso'
+        descModal.value = 'Seus livros foram cadastrados, você pode verifica-los na página "Consultar Livros"'
+
+        // Cria um objeto a partir dos dados digitados nos inputs
+        const novosDados = {
+          titulo: nomeLivro.value,
+          autor: autorLivro.value,
+          genero: generoLivro.value,
+          data: dataLivro.value,
+          quantidade: quantidadeLivro.value
+        }
+
+        // Adiciona os objetos no array
+        storage.push(novosDados)
+
+        // Atualiza o local storage
+        localStorage.setItem('livros', JSON.stringify(storage))
       }
-
-      // Adiciona os objetos no array
-      storage.push(novosDados)
-
-      // Atualiza o local storage
-      localStorage.setItem('livros', JSON.stringify(storage))
     }
 
     function cadastrarLote () {

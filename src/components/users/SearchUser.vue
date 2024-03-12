@@ -10,12 +10,27 @@
             <form action="" class=" col-6 form mt-3">
             <div class="row align-items-end">
                 <div class="col">
-                    <label for="pesquisar" class="form-label">Buscar usuario</label>
-                    <input ref="nomeBuscadoInput" type="text" id="pesquisar" class="form-control">
+
+                    <label
+                    for="pesquisar"
+                    class="form-label">Buscar usuario
+                    </label>
+
+                    <input
+                    ref="nomeBuscadoInput"
+                    type="text"
+                    id="pesquisar"
+                    class="form-control">
+
                 </div>
 
                 <div class="col">
-                    <button @click.prevent="buscarUsuario()" class="btn btn-primary">Buscar</button>
+
+                    <button
+                    @click.prevent="buscarUsuario()"
+                    class="btn btn-primary">Buscar
+                    </button>
+
                 </div>
             </div>
         </form>
@@ -38,8 +53,23 @@
                     <td>{{ usuarioBuscadoResult.nome }}</td>
                     <td>{{ usuarioBuscadoResult.cpf }}</td>
                     <td>{{ usuarioBuscadoResult.endereco }}</td>
-                    <td><span v-for="livro in usuarioBuscadoResult.livrosEmprestimos" :key="livro">{{ livro.titulo }}({{ livro.dataDevolucao }}), </span></td>
-                    <td><button @click="deletarLinha($event)" type="button" class="btn btn-danger">Deletar</button></td>
+
+                    <td>
+                      <span
+                      v-for="livro in usuarioBuscadoResult.livrosEmprestimos"
+                      :key="livro">{{ livro.titulo }}({{ livro.dataDevolucao }}) -
+                      </span>
+
+                    </td>
+
+                    <td>
+                      <button
+                      @click="deletarLinha($event)"
+                      type="button"
+                      class="btn btn-danger">Deletar
+                      </button>
+                    </td>
+
                 </tr>
             </tbody>
 
@@ -49,8 +79,22 @@
                     <td>{{ usuario.usuario }}</td>
                     <td>{{ usuario.cpf }}</td>
                     <td>{{ usuario.endereco }}</td>
-                    <td><span v-for="livro in usuario.livrosEmprestimos" :key="livro">{{ livro.titulo }}({{ livro.dataDevolucao }}) - </span></td>
-                    <td><button @click="deletarLinha($event)" type="button" class="btn btn-danger">Deletar</button></td>
+
+                    <td>
+                      <span
+                      v-for="livro in usuario.livrosEmprestimos"
+                      :key="livro">{{ livro.titulo }}({{ livro.dataDevolucao }}) -
+                    </span>
+                    </td>
+
+                    <td>
+                      <button
+                      @click="deletarLinha($event)"
+                      type="button"
+                      class="btn btn-danger">Deletar
+                    </button>
+                    </td>
+
                 </tr>
             </tbody>
         </table>
@@ -74,7 +118,6 @@ export default {
     const usuarioBuscadoResult = ref({})
 
     function buscarUsuario () {
-      console.log(usuarios[0].livrosEmprestimos)
       const nomeBuscado = nomeBuscadoInput.value.value
       renderizar.value = true
 

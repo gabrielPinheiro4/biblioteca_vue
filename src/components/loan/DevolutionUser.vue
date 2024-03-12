@@ -11,33 +11,73 @@
             <div class="row mb-3">
                 <div class="col">
                     <label for="nomeCliente">Nome do cliente</label>
-                    <input ref="nomeClienteInput" type="text" id="nomeCliente" class="form-control">
+
+                    <input
+                    ref="nomeClienteInput"
+                    type="text"
+                    id="nomeCliente"
+                    class="form-control">
+
                 </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col">
                     <label for="nomeLivro">Nome do livro</label>
-                    <input ref="nomeLivroInput" type="text" id="nomeLivro" class="form-control">
+
+                    <input
+                    ref="nomeLivroInput"
+                    type="text"
+                    id="nomeLivro"
+                    class="form-control">
+
                 </div>
             </div>
 
             <div class="row">
                 <div class="col">
-                    <button @click.prevent="fazerDevolucao()" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-primary">Fazer devolução</button>
+                    <button
+                    @click.prevent="fazerDevolucao()"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    class="btn btn-primary">Fazer devolução
+                  </button>
 
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div
+                    class="modal fade"
+                    id="exampleModal"
+                    tabindex="-1"
+                    aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+
                       <div class="modal-dialog">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">{{ tituloModal }}</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                            <h1
+                            class="modal-title fs-5"
+                            id="exampleModalLabel">{{ tituloModal }}
+                            </h1>
+
+                            <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                            </button>
+
                           </div>
                           <div class="modal-body">
                             {{ mensagemModal }}
                           </div>
                           <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fechar</button>
+
+                            <button
+                            type="button"
+                            class="btn btn-primary"
+                            data-bs-dismiss="modal">Fechar
+                            </button>
+
                           </div>
                         </div>
                       </div>
