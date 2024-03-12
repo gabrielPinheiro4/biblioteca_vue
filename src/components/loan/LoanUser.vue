@@ -118,6 +118,11 @@ export default {
         mensagemModal.value = 'O livro não tem quantidade suficiente para '+
                               'realizar um empréstimo'
 
+      } else if (cliente === '' || livroEmprestimo === '' || dataD === '') {
+        tituloModal.value = 'Campos não preenchidos'
+        mensagemModal.value = 'Preencha todos os campos para realizar o ' +
+                              'empréstimo'
+
       } else {
         tituloModal.value = 'Empréstimo feito com sucesso'
 

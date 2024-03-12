@@ -90,6 +90,16 @@ export default {
         tituloModal.value = tituloModalError
         mensagemModal.value = descModalError
 
+      } else if (cliente === '' || livroDevolucao === '') {
+        tituloModal.value = 'Campos não preenchidos'
+        mensagemModal.value = 'Preencha todos os campos para realizar a ' +
+                              'devolução'
+
+      } else if (clienteSelecionado[0].livrosEmprestimos.length <= 0) {
+        tituloModal.value = 'Impossível fazer devolução'
+        mensagemModal.value = `O cliente ${clienteSelecionado[0].nome} ` +
+                              `não possui livros a serem devolvidos`
+
       } else {
         tituloModal.value = 'Devolução feita com sucesso'
         mensagemModal.value = `A devolução foi feita com sucesso, o livro` +
