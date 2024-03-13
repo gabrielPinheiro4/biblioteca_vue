@@ -11,7 +11,7 @@
           <label class="form-label" for="nome_livro">Nome do livro</label>
 
           <input
-          v-model="nomeLivro"
+          v-model.trim="nomeLivro"
           type="text"
           class="form-control"
           id="nome_livro">
@@ -22,7 +22,7 @@
           <label for="autor" class="form-label">Autor</label>
 
           <input
-          v-model="autorLivro"
+          v-model.trim="autorLivro"
           type="text"
           class="form-control"
           id="autor">
@@ -35,7 +35,7 @@
           <label for="genero" class="form-label">Gênero</label>
 
           <input
-          v-model="generoLivro"
+          v-model.trim="generoLivro"
           type="text"
           class="form-control"
           id="genero">
@@ -46,7 +46,7 @@
           <label for="data" class="form-label">Data de lançamento</label>
 
           <input
-          v-model="dataLivro"
+          v-model.trim="dataLivro"
           type="date"
           class="form-control"
           id="data">
@@ -59,7 +59,7 @@
           <label for="quantidade" class="form-label">Quantidade</label>
 
           <input
-          v-model="quantidadeLivro"
+          v-model.trim="quantidadeLivro"
           type="number"
           class="form-control"
           id="quantidade">

@@ -12,7 +12,7 @@
                 <label for="nomeCompleto">Nome Completo</label>
 
                 <input
-                v-model="nomeCompleto"
+                v-model.trim="nomeCompleto"
                 type="text"
                 id="nomeCompleto"
                 class="form-control">
@@ -23,7 +23,7 @@
                 <label for="usuario">Usuário</label>
 
                 <input
-                v-model="usuarioInput"
+                v-model.trim="usuarioInput"
                 type="text"
                 id="usuario"
                 class="form-control">
@@ -36,7 +36,9 @@
                 <label for="cpf">CPF</label>
 
                 <input
-                v-model="cpfInput"
+                v-maska
+                data-maska="###.###.###-##"
+                v-model.trim="cpfInput"
                 type="text" id="cpf"
                 class="form-control">
 
@@ -46,7 +48,7 @@
                 <label for="endereco">Endereço</label>
 
                 <input
-                v-model="enderecoInput"
+                v-model.trim="enderecoInput"
                 type="text"
                 id="endereco"
                 class="form-control">
@@ -112,9 +114,13 @@
 <script>
 /* eslint-disable */
 import { ref } from 'vue'
+import { vMaska, } from 'maska'
 
 export default {
   name: 'RegisterView',
+  directives :{
+    maska: vMaska
+  },
 
   setup () {
     const nomeCompleto = ref('')
@@ -131,7 +137,7 @@ export default {
     }
 
     function cadastarUsuario () {
-      if (nomeCompleto.value === '' || usuarioInput.value === '' || enderecoInput.value === '' || cpfInput.value === '') {
+      if (nomeCompleto.value === '' || usuarioInput.value === '' || enderecoInput.value === '' || cpfInput.value === '' || cpfInput.value.length < 14) {
         tituloModal.value = 'Campos não preenchidos'
         mensagemModal.value = 'Preencha todos os campos para cadastrar o usuario'
 

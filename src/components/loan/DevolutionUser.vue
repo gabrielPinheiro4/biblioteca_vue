@@ -13,7 +13,7 @@
                     <label for="nomeCliente">Nome do cliente</label>
 
                     <input
-                    ref="nomeClienteInput"
+                    v-model.trim="nomeClienteInput"
                     type="text"
                     id="nomeCliente"
                     class="form-control">
@@ -22,11 +22,26 @@
             </div>
 
             <div class="row mb-3">
+              <div class="col">
+                <label for="cpfCliente">CPF</label>
+
+                <input
+                v-maska
+                data-maska="###.###.###-##"
+                v-model.trim="cpfCliente"
+                type="text"
+                id="cpfCliente"
+                class="form-control">
+
+              </div>
+            </div>
+
+            <div class="row mb-3">
                 <div class="col">
                     <label for="nomeLivro">Nome do livro</label>
 
                     <input
-                    ref="nomeLivroInput"
+                    v-model.trim="nomeLivroInput"
                     type="text"
                     id="nomeLivro"
                     class="form-control">
@@ -93,13 +108,18 @@
 /* eslint-disable */
 import { ref } from 'vue'
 import { removeAcentos } from '@/funcoes'
+import { vMaska } from 'maska'
 
 export default {
   name: 'DevolutionUser',
+  directives: {
+    maska: vMaska
+  },
 
   setup () {
-    const nomeClienteInput = ref(null)
-    const nomeLivroInput = ref(null)
+    const nomeClienteInput = ref('')
+    const nomeLivroInput = ref('')
+    const cpfCliente = ref('')
     const tituloModal = ref('')
     const mensagemModal = ref ('')
     const usuarios = JSON.parse(localStorage.getItem('usuarios'))
@@ -111,8 +131,9 @@ export default {
                            'no sistema, verifique novamente os dados digitados'
 
     function fazerDevolucao () {
-      const cliente = removeAcentos(nomeClienteInput.value.value).toLowerCase()
-      const livroDevolucao = removeAcentos(nomeLivroInput.value.value).toLowerCase()
+      const cliente = removeAcentos(nomeClienteInput.value).toLowerCase()
+      const livroDevolucao = removeAcentos(nomeLivroInput.value).toLowerCase()
+      const clienteCPF = cpfCliente.value
 
       const livroSelecionado = livros.filter((livro) => {
         const livroSemAcento = removeAcentos(livro.titulo).toLowerCase()
@@ -123,14 +144,14 @@ export default {
       const clienteSelecionado = usuarios.filter((usuario) => {
         const clienteSemAcento = removeAcentos(usuario.nome).toLowerCase()
 
-        return clienteSemAcento.includes(cliente)
+        return clienteSemAcento.includes(cliente) && usuario.cpf === clienteCPF
       })
 
       if (livroSelecionado.length <= 0 || clienteSelecionado.length <= 0) {
         tituloModal.value = tituloModalError
         mensagemModal.value = descModalError
 
-      } else if (cliente === '' || livroDevolucao === '') {
+      } else if (cliente === '' || livroDevolucao === '' || clienteCPF === '') {
         tituloModal.value = 'Campos não preenchidos'
         mensagemModal.value = 'Preencha todos os campos para realizar a ' +
                               'devolução'
@@ -142,8 +163,8 @@ export default {
 
       } else {
         tituloModal.value = 'Devolução feita com sucesso'
-        mensagemModal.value = `A devolução foi feita com sucesso, o livro` +
-                              `${livroSelecionado[0].titulo} foi adicionado` +
+        mensagemModal.value = `A devolução foi feita com sucesso, o livro ` +
+                              `"${livroSelecionado[0].titulo}" foi adicionado` +
                               `ao estoque`
 
         for (const livro of clienteSelecionado[0].livrosEmprestimos) {
@@ -181,6 +202,7 @@ export default {
     return {
         nomeClienteInput,
         nomeLivroInput,
+        cpfCliente,
         tituloModal,
         mensagemModal,
         livroSelecionadoDevolucao,

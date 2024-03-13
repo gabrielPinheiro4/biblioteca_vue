@@ -12,7 +12,7 @@
                     <label for="nomeCliente">Nome do cliente</label>
 
                     <input
-                    ref="nomeCliente"
+                    v-model.trim="nomeCliente"
                     type="text"
                     id="nomeCliente"
                     class="form-control">
@@ -21,26 +21,28 @@
             </div>
 
             <div class="row mb-3">
-                <div class="col">
-                    <label for="nomeLivro">Nome do livro</label>
+              <div class="col">
+                <label for="cpfCliente">CPF</label>
 
-                    <input
-                    ref="nomeLivro"
-                    type="text"
-                    id="nomeLivro"
-                    class="form-control">
+                <input
+                v-maska
+                data-maska="###.###.###-##"
+                v-model.trim="cpfCliente"
+                type="text"
+                id="cpfCliente"
+                class="form-control">
 
-                </div>
+              </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col">
-                    <label for="dataDevolucao">Data de devolução</label>
+                    <label for="nomeLivro">Nome do livro</label>
 
                     <input
-                    ref="dataDevolucao"
-                    type="date"
-                    id="dataDevolucao"
+                    v-model.trim="nomeLivro"
+                    type="text"
+                    id="nomeLivro"
                     class="form-control">
 
                 </div>
@@ -103,10 +105,15 @@
 <script>
 /* eslint-disable */
 import { ref } from 'vue'
+import moment from 'moment'
 import { removeAcentos } from '@/funcoes'
+import { vMaska } from 'maska'
 
 export default {
   name: 'LoanUser',
+  directives: {
+    maska: vMaska
+  },
 
   setup () {
 
@@ -115,9 +122,9 @@ export default {
     const usuarios = JSON.parse(localStorage.getItem('usuarios'))
 
     // Variaveis para receber os valores dos campos inputs
-    const nomeCliente = ref(null)
-    const nomeLivro = ref(null)
-    const dataDevolucao = ref(null)
+    const nomeCliente = ref('')
+    const nomeLivro = ref('')
+    const cpfCliente = ref('')
 
     //Variaveis para as mensagens no modal
     const tituloModal = ref('')
@@ -131,12 +138,16 @@ export default {
 
       // Removendo acentuação e dexando em lower case o valor do input
       // nomeCliente
-      const cliente = removeAcentos(nomeCliente.value.value).toLowerCase()
+      const cliente = removeAcentos(nomeCliente.value).toLowerCase()
 
       // Removendo acentuação e dexando em lower case o valor do input
       // nomeLivro
-      const livroEmprestimo = removeAcentos(nomeLivro.value.value).toLowerCase()
-      const dataD = dataDevolucao.value.value
+      const livroEmprestimo = removeAcentos(nomeLivro.value).toLowerCase()
+
+      const clienteCPF = cpfCliente.value
+
+      // Data da devolução
+      const dataD = moment().add(7, 'days').format('YYYY-MM-DD')
 
       // Retona um array com o livro selecionado
       const livroSelecionado = livros.filter((livro) => {
@@ -149,7 +160,7 @@ export default {
       const usuarioSelecionado = usuarios.filter((usuario) => {
         const nomeUserNormalize = removeAcentos(usuario.nome).toLowerCase()
 
-        return nomeUserNormalize.includes(cliente)
+        return nomeUserNormalize.includes(cliente) && usuario.cpf === clienteCPF
       })
 
       // Entra se o array do livro ou usuario for vazio
@@ -164,7 +175,7 @@ export default {
         mensagemModal.value = 'O livro não tem quantidade suficiente para '+
                               'realizar um empréstimo'
 
-      } else if (cliente === '' || livroEmprestimo === '' || dataD === '') {
+      } else if (cliente === '' || livroEmprestimo === '' || clienteCPF === '') {
         tituloModal.value = 'Campos não preenchidos'
         mensagemModal.value = 'Preencha todos os campos para realizar o ' +
                               'empréstimo'
@@ -174,8 +185,8 @@ export default {
 
         mensagemModal.value = `Empréstimo feito com sucesso, o(a) `+
                               `${usuarioSelecionado[0].nome} deve devolver o `+
-                              `livro ${livroSelecionado[0].titulo} até `+
-                              `${dataD}` 
+                              `livro "${livroSelecionado[0].titulo}" até `+
+                              `${dataD}`
 
         // Variavel para guardar a quantidade do livro
         let qnt = parseInt(livroSelecionado[0].quantidade)
@@ -211,11 +222,11 @@ export default {
       usuarios,
       nomeCliente,
       nomeLivro,
+      cpfCliente,
       tituloModalError,
       descModalError,
       tituloModal,
       mensagemModal,
-      dataDevolucao,
       fazerEmprestimo
     }
   }

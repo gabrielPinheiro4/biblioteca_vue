@@ -49,8 +49,8 @@
 
             <tbody v-if="!ehVazio && renderizar">
                 <tr>
-                    <td>{{ usuarioBuscadoResult.usuario }}</td>
                     <td>{{ usuarioBuscadoResult.nome }}</td>
+                    <td>{{ usuarioBuscadoResult.usuario }}</td>
                     <td>{{ usuarioBuscadoResult.cpf }}</td>
                     <td>{{ usuarioBuscadoResult.endereco }}</td>
 
