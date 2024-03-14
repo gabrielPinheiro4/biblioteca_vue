@@ -8,7 +8,7 @@
   <form action="" class="form">
     <div class="row mb-3">
         <div class="col">
-          <label class="form-label" for="nome_livro">Nome do livro</label>
+          <label class="form-label" for="nome_livro">Título do livro</label>
 
           <input
           v-model.trim="nomeLivro"

@@ -70,6 +70,129 @@
                       </button>
                     </td>
 
+                    <td>
+                      <button
+                      @click.prevent="editarUsuario($event)"
+                      class="btn btn-secondary"
+                      ref="editButton"
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModal">Editar
+                      </button>
+
+                      <div
+                      class="modal fade"
+                      id="exampleModal"
+                      tabindex="-1"
+                      aria-labelledby="exampleModalLabel"
+                      aria-hidden="true">
+
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+
+                              <h1
+                              class="modal-title fs-5"
+                              id="exampleModalLabel">Editar Usuário
+                              </h1>
+
+                              <button
+                              type="button"
+                              class="btn-close"
+                              data-bs-dismiss="modal"
+                              aria-label="Close">
+                              </button>
+
+                            </div>
+                            <div class="modal-body">
+
+                              <form action="">
+                                <div class="row mb-3">
+                                  <div class="col">
+                                    <label for="novoNome">Nome Completo</label>
+
+                                    <input
+                                    v-model.trim="novoNome"
+                                    type="text"
+                                    id="novoNome"
+                                    class="form-control">
+
+                                  </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                  <div class="col">
+                                    <label for="novoUser">Usuário</label>
+
+                                    <input
+                                    v-model.trim="novoUser"
+                                    type="text"
+                                    id="novoUser"
+                                    class="form-control">
+
+                                  </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                  <div class="col">
+                                    <label for="novoCPF">CPF</label>
+
+                                    <input
+                                    v-maska
+                                    data-maska="###.###.###-##"
+                                    v-model.trim="novoCPF"
+                                    type="text"
+                                    id="novoCPF"
+                                    class="form-control">
+
+                                  </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                  <div class="col">
+                                    <label for="novoEndereco">Endereço</label>
+
+                                    <input
+                                    v-model.trim="novoEndereco"
+                                    type="text"
+                                    id="novoEndereco"
+                                    class="form-control">
+
+                                  </div>
+                                </div>
+
+                                <div v-if="exibirAlerta" class="row">
+                                  <div class="col">
+                                    <div class="alert alert-danger" role="alert">
+                                      {{ mensagemAlerta }}
+                                    </div>
+
+                                  </div>
+                                </div>
+
+                              </form>
+
+                            </div>
+                            <div class="modal-footer">
+
+                              <button
+                              type="button"
+                              class="btn btn-secondary"
+                              data-bs-dismiss="modal">Cancelar
+                              </button>
+
+                              <button
+                              @click="salvarUsuarioEditado()"
+                              type="button"
+                              class="btn btn-primary">Salvar Alterações
+                              </button>
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </td>
+
                 </tr>
             </tbody>
 
@@ -134,35 +257,61 @@
                                 <div class="row mb-3">
                                   <div class="col">
                                     <label for="novoNome">Nome Completo</label>
-                                    <input v-model.trim="novoNome" type="text" id="novoNome" class="form-control">
+
+                                    <input
+                                    v-model.trim="novoNome"
+                                    type="text"
+                                    id="novoNome"
+                                    class="form-control">
+
                                   </div>
                                 </div>
 
                                 <div class="row mb-3">
                                   <div class="col">
                                     <label for="novoUser">Usuário</label>
-                                    <input v-model.trim="novoUser" type="text" id="novoUser" class="form-control">
+
+                                    <input
+                                    v-model.trim="novoUser"
+                                    type="text"
+                                    id="novoUser"
+                                    class="form-control">
+
                                   </div>
                                 </div>
 
                                 <div class="row mb-3">
                                   <div class="col">
                                     <label for="novoCPF">CPF</label>
-                                    <input v-model.trim="novoCPF" type="text" id="novoCPF" class="form-control">
+
+                                    <input
+                                    v-maska
+                                    data-maska="###.###.###-##"
+                                    v-model.trim="novoCPF"
+                                    type="text"
+                                    id="novoCPF"
+                                    class="form-control">
+
                                   </div>
                                 </div>
 
                                 <div class="row mb-3">
                                   <div class="col">
                                     <label for="novoEndereco">Endereço</label>
-                                    <input v-model.trim="novoEndereco" type="text" id="novoEndereco" class="form-control">
+
+                                    <input
+                                    v-model.trim="novoEndereco"
+                                    type="text"
+                                    id="novoEndereco"
+                                    class="form-control">
+
                                   </div>
                                 </div>
 
-                                <div v-if="editarUsuarioVazio" class="row">
+                                <div v-if="exibirAlerta" class="row">
                                   <div class="col">
                                     <div class="alert alert-danger" role="alert">
-                                      Preencha todos os campos !!!
+                                      {{ mensagemAlerta }}
                                     </div>
 
                                   </div>
@@ -191,7 +340,6 @@
                       </div>
 
                     </td>
-
                 </tr>
             </tbody>
         </table>
@@ -202,10 +350,14 @@
 <script>
 /* eslint-disable */
 import { ref } from 'vue'
+import { vMaska } from 'maska'
 import { removeAcentos } from '@/funcoes'
 
 export default {
   name: 'SearchUser',
+  directives: {
+    maska: vMaska
+  },
 
   setup () {
     const usuarios = JSON.parse(localStorage.getItem('usuarios'))
@@ -220,9 +372,11 @@ export default {
     const novoCPF = ref('')
     const novoEndereco = ref('')
 
+    const mensagemAlerta = ref('')
+
     const usuarioAntigo = ref({})
 
-    const editarUsuarioVazio = ref(false)
+    const exibirAlerta = ref(false)
 
     function buscarUsuario () {
       const nomeBuscado = nomeBuscadoInput.value.value
@@ -246,33 +400,46 @@ export default {
     }
 
     function deletarLinha (event) {
+
+      // Pega o texto da coluna Nome Completo
       const textElement = event.target.parentElement.parentElement.childNodes[0].outerText
+
+      // Retorna o livro selecionado no local storage
       const livroSelecionado = usuarios.filter((usuario) => {
         return usuario.nome === textElement
       })
       
+      // Pega o index do livro no array
       const indexUsuarioRemove = usuarios.indexOf(livroSelecionado[0])
 
+      // Remove o objeto
       usuarios.splice(indexUsuarioRemove, 1)
-      
+
+      // Salva a alteração no local storage
       localStorage.setItem('usuarios', JSON.stringify(usuarios))
 
+      // Recarrega a pagina
       window.location.reload()
     }
 
     function editarUsuario(event) {
+
+      // Pega a linha da tabela 
       const linha = event.target.parentElement.parentElement.childNodes
 
+      // Pega os dados das colunas
       const nomeAntigo = linha[0].innerText
       const userAntigo = linha[1].innerText
       const cpfAntigo = linha[2].innerText
       const enderecoAntigo = linha[3].innerText
 
+      // Atribui os valores do input com os valores do usuario
       novoNome.value = nomeAntigo
       novoCPF.value = cpfAntigo
       novoUser.value = userAntigo
       novoEndereco.value = enderecoAntigo
 
+      // Cria um objeto com os dados atuais do usuario
       usuarioAntigo.value = {
         usuario: userAntigo,
         nome: nomeAntigo,
@@ -282,25 +449,39 @@ export default {
     }
 
     function salvarUsuarioEditado () {
-      if (novoNome.value === '' || novoUser.value === '' || novoCPF.value === '' || novoEndereco === '') {
-        editarUsuarioVazio.value = true
 
-        setTimeout(() => {editarUsuarioVazio.value = false}, 4000)
+      // Entra se os valores dos inputs forem vazios
+      if (novoNome.value === '' ||
+          novoUser.value === '' ||
+          novoCPF.value === '' ||
+          novoEndereco.value === '') {
+        exibirAlerta.value = true
+        mensagemAlerta.value = 'Preencha todos os campos !!'
+        setTimeout(() => {exibirAlerta.value = false}, 4000)
+
+      // Entra se o valor do CPF estiver incompleto
+      } else if (novoCPF.value.length < 14) {
+        mensagemAlerta.value = 'O CPF está incompleto !!'
+        exibirAlerta.value = true
+        setTimeout(() => {exibirAlerta.value = false}, 4000)
 
       } else {
+
+        // Retorna o usuario selecionado no local storage
         const usuarioSelecionado = usuarios.filter((usuario) => {
           return usuario.cpf === usuarioAntigo.value.cpf
         })
 
-        // console.log(usuarioAntigo.value)
-        // console.log(usuarioSelecionado)
+        // Atribui novos valores valores para o usuario
         usuarioSelecionado[0].nome = novoNome.value
         usuarioSelecionado[0].cpf = novoCPF.value
         usuarioSelecionado[0].usuario = novoUser.value
         usuarioSelecionado[0].endereco = novoEndereco.value
-        
+
+        // Salva as alterações no local storage
         localStorage.setItem('usuarios', JSON.stringify(usuarios))
 
+        // Recarrega a tela 
         window.location.reload()
       }
     }
@@ -316,9 +497,10 @@ export default {
       novoCPF,
       novoEndereco,
       usuarioBuscadoResult,
-      editarUsuarioVazio,
+      exibirAlerta,
       usuarioAntigo,
       buscarUsuario,
+      mensagemAlerta,
       deletarLinha,
       editarUsuario,
       salvarUsuarioEditado

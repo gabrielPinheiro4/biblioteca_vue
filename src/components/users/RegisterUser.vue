@@ -129,6 +129,7 @@ export default {
     const cpfInput = ref('')
     const tituloModal = ref('')
     const mensagemModal = ref('')
+    const usuarioJaCadastrado = ref(false)
 
     let usuarios = JSON.parse(localStorage.getItem('usuarios'))
 
@@ -137,9 +138,25 @@ export default {
     }
 
     function cadastarUsuario () {
-      if (nomeCompleto.value === '' || usuarioInput.value === '' || enderecoInput.value === '' || cpfInput.value === '' || cpfInput.value.length < 14) {
+
+      for (const usuario of usuarios) {
+          if (usuario.usuario === usuarioInput.value || usuario.cpf === cpfInput.value) {
+            usuarioJaCadastrado.value = true
+          }
+        }
+
+      if (nomeCompleto.value === '' ||
+          usuarioInput.value === '' ||
+          enderecoInput.value === '' ||
+          cpfInput.value === '' ||
+          cpfInput.value.length < 14) {
+
         tituloModal.value = 'Campos não preenchidos'
         mensagemModal.value = 'Preencha todos os campos para cadastrar o usuario'
+
+      } else if (usuarioJaCadastrado.value) {
+        tituloModal.value = 'Usuário já cadastrado'
+        mensagemModal.value = 'O nome de usuário ou o CPF já está cadastrado no sistema'
 
       } else {
         tituloModal.value = 'Usuário cadastrado com sucesso'
@@ -157,7 +174,7 @@ export default {
 
         localStorage.setItem('usuarios', JSON.stringify(usuarios))
       }
-    }
+  }
 
     return {
       nomeCompleto,
@@ -165,6 +182,7 @@ export default {
       enderecoInput,
       cpfInput,
       tituloModal,
+      usuarioJaCadastrado,
       mensagemModal,
       cadastarUsuario
     }
