@@ -118,7 +118,7 @@
             </tbody>
 
             <tbody v-else>
-                <tr v-for="livro in livros" :key="livro">
+                <tr v-for="livro in listarLivros" :key="livro">
                     <td>{{ livro.titulo }}</td>
                     <td>{{ livro.autor }}</td>
                     <td>{{ livro.genero }}</td>
@@ -270,12 +270,41 @@
             </tbody>
         </table>
 
+        <div class="row pagination">
+          <div class="col">
+            <nav aria-label="Page navigation example">
+              <ul class="pagination">
+                <li @click="antecessorPagina()" class="page-item"><a class="page-link" href="#">Previous</a></li>
+
+                <li
+                v-for="item in Math.ceil(livros.length / porPagina)" :key="item" class="page-item cursor-pointer" @click="irPagina(item)"> <a class="page-link">{{ item }}</a></li>
+
+                <li @click="proxPagina()" class="page-item"><a class="page-link" href="#">Next</a></li>
+
+              </ul>
+            </nav>
+          </div>
+
+          <div class="col-3">
+            <div class="d-flex align-items-end">
+              <div>
+                <label for="qntLivros">Quantidade de livros</label>
+                <input v-model.trim="qntLivros" type="number" id="qntLivros" class="form-control">
+              </div>
+
+            <div>
+              <p class="fs-3 mb-0">/ {{ livros.length }}</p>
+            </div>
+            </div>
+          </div>
+        </div>
+
     </div>
 </template>
 
 <script>
 /* eslint-disable */
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { removeAcentos } from '@/funcoes'
 
 export default {
@@ -310,6 +339,29 @@ export default {
     const mensagemAlerta = ref('')
 
     const livroAntigo = ref({})
+
+    const pagina = ref (1)
+    const porPagina = ref(10)
+
+    const listarLivros = computed(() => {
+      return livros.slice((pagina.value - 1) * porPagina.value, pagina.value * porPagina.value)
+    })
+
+    function proxPagina () {
+      if (pagina.value !== Math.ceil(livros.length / porPagina.value)) {
+        pagina.value += 1
+      }
+    }
+
+    function antecessorPagina () {
+      if (pagina.value !== 1) {
+        pagina.value -= 1
+      }
+    }
+
+    function irPagina (numeroPagina) {
+      pagina.value = numeroPagina
+    }
 
     const renderizar = ref(false)
     const ehVazio = ref(true)
@@ -484,7 +536,13 @@ export default {
       filtrarData,
       deletarLinha,
       editarLivro,
-      salvarLivroEditado
+      salvarLivroEditado,
+      pagina,
+      porPagina,
+      listarLivros,
+      proxPagina,
+      antecessorPagina,
+      irPagina
     }
   }
 }
