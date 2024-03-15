@@ -68,7 +68,11 @@
         </form>
         </div>
 
-        <table class="table mt-5">
+        <div class="total_livros mt-5">
+          <p class="fs-5 mb-0">Total de livros cadastrados: {{ livros.length }}</p>
+        </div>
+
+        <table class="table mt-4">
             <thead>
                 <tr>
                     <th scope="col">Titulo</th>
@@ -99,7 +103,7 @@
             </tbody>
 
             <tbody v-else-if="livroFiltrado.length > 0">
-                <tr v-for="livro in livroFiltrado" :key="livro">
+                <tr v-for="livro in listarLivros" :key="livro">
                     <td>{{ livro.titulo }}</td>
                     <td>{{ livro.autor }}</td>
                     <td>{{ livro.genero }}</td>
@@ -274,28 +278,38 @@
           <div class="col">
             <nav aria-label="Page navigation example">
               <ul class="pagination">
-                <li @click="antecessorPagina()" class="page-item"><a class="page-link" href="#">Previous</a></li>
 
                 <li
-                v-for="item in Math.ceil(livros.length / porPagina)" :key="item" class="page-item cursor-pointer" @click="irPagina(item)"> <a class="page-link">{{ item }}</a></li>
+                @click="antecessorPagina()"
+                class="page-item"><a class="page-link" href="#">Anterior</a>
+                </li>
 
-                <li @click="proxPagina()" class="page-item"><a class="page-link" href="#">Next</a></li>
+                <li
+                v-for="item in Math.ceil(todosLivros.length / qntLivrosLista)"
+                :key="item" class="page-item" @click="irPagina(item)">
+                <a class="page-link">{{ item }}</a>
+                </li>
+
+                <li
+                @click="proxPagina()" class="page-item">
+                <a class="page-link" href="#">Próximo</a>
+                </li>
 
               </ul>
             </nav>
           </div>
 
-          <div class="col-3">
-            <div class="d-flex align-items-end">
+          <div class="col-3 mt-3">
               <div>
-                <label for="qntLivros">Quantidade de livros</label>
-                <input v-model.trim="qntLivros" type="number" id="qntLivros" class="form-control">
-              </div>
+                <label for="qntLivrosLista">Quantidade de livros mostrados</label>
 
-            <div>
-              <p class="fs-3 mb-0">/ {{ livros.length }}</p>
-            </div>
-            </div>
+                <input
+                v-model.lazy.trim="qntLivrosLista"
+                type="number"
+                id="qntLivrosLista"
+                class="form-control">
+
+              </div>
           </div>
         </div>
 
@@ -341,14 +355,18 @@ export default {
     const livroAntigo = ref({})
 
     const pagina = ref (1)
-    const porPagina = ref(10)
+    const qntLivrosLista = ref(10)
+
+    const todosLivros = ref(livros)
 
     const listarLivros = computed(() => {
-      return livros.slice((pagina.value - 1) * porPagina.value, pagina.value * porPagina.value)
+      return todosLivros.value.slice(
+        (pagina.value - 1) * qntLivrosLista.value, pagina.value * qntLivrosLista.value
+      )
     })
 
     function proxPagina () {
-      if (pagina.value !== Math.ceil(livros.length / porPagina.value)) {
+      if (pagina.value !== Math.ceil(todosLivros.value.length / qntLivrosLista.value)) {
         pagina.value += 1
       }
     }
@@ -410,10 +428,12 @@ export default {
         })
 
         livroFiltrado.value = livroFiltradoFilter
+        todosLivros.value = livroFiltradoFilter
       
       // Entra se o valor do inputa da data minima for maior que zero e o da
       // data maxima for menor ou igual a zero
       } else if (dataMinima.value > 0 && dataMaxima.value <= 0) {
+
         const livroFiltradoFilter = livros.filter((livro) => {
           const anoLivro = parseInt(livro.data.split('-')[0])
 
@@ -422,6 +442,7 @@ export default {
         })
 
         livroFiltrado.value = livroFiltradoFilter
+        todosLivros.value = livroFiltradoFilter
 
       } else {
         const livroFiltradoFilter = livros.filter((livro) => {
@@ -432,6 +453,7 @@ export default {
         })
 
         livroFiltrado.value = livroFiltradoFilter
+        todosLivros.value = livroFiltradoFilter
 
       }
     }
@@ -538,12 +560,20 @@ export default {
       editarLivro,
       salvarLivroEditado,
       pagina,
-      porPagina,
       listarLivros,
       proxPagina,
       antecessorPagina,
-      irPagina
+      irPagina,
+      qntLivrosLista,
+      todosLivros
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.page-link{
+  cursor: pointer;
+}
+
+</style>
