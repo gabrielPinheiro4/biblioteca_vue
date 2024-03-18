@@ -83,45 +83,7 @@
                 </tr>
             </thead>
 
-            <tbody v-if="!ehVazio && renderizar">
-                <tr>
-                    <td>{{ livroBuscado.titulo }}</td>
-                    <td>{{ livroBuscado.autor }}</td>
-                    <td>{{ livroBuscado.genero }}</td>
-                    <td>{{ livroBuscado.data }}</td>
-                    <td>{{ livroBuscado.quantidade }}</td>
-
-                    <td>
-                      <button
-                      @click="deletarLinha($event)"
-                      type="button"
-                      class="btn btn-danger">Deletar
-                      </button>
-                    </td>
-
-                </tr>
-            </tbody>
-
-            <tbody v-else-if="livroFiltrado.length > 0">
-                <tr v-for="livro in listarLivros" :key="livro">
-                    <td>{{ livro.titulo }}</td>
-                    <td>{{ livro.autor }}</td>
-                    <td>{{ livro.genero }}</td>
-                    <td>{{ livro.data }}</td>
-                    <td>{{ livro.quantidade }}</td>
-
-                    <td>
-                      <button
-                      @click="deletarLinha($event)"
-                      type="button"
-                      class="btn btn-danger">Deletar
-                      </button>
-                    </td>
-
-                </tr>
-            </tbody>
-
-            <tbody v-else>
+            <tbody>
                 <tr v-for="livro in listarLivros" :key="livro">
                     <td>{{ livro.titulo }}</td>
                     <td>{{ livro.autor }}</td>
@@ -344,21 +306,30 @@ export default {
     // Variavel para guardar os dados do livro filtrado pela data
     const livroFiltrado = ref([])
 
+    // Variaveis para os novos valores dos livros
     const novoTitulo = ref('')
     const novoAutor = ref('')
     const novoGenero = ref('')
     const novaData = ref('')
     const novaQnt = ref('')
+
+    // Variaveis para o alerta
     const exibirAlerta = ref(false)
     const mensagemAlerta = ref('')
 
+    // Variavel para guardar o valor do livro sem mudanças
     const livroAntigo = ref({})
 
+    // Valor da pagina atual
     const pagina = ref (1)
+
+    // Quantidade de livros mostrado na tela
     const qntLivrosLista = ref(10)
 
+    // Variavel para guardar o array contendo todos os livros
     const todosLivros = ref(livros)
 
+    // Limita a quantidade de livros mostrados
     const listarLivros = computed(() => {
       return todosLivros.value.slice(
         (pagina.value - 1) * qntLivrosLista.value, pagina.value * qntLivrosLista.value
@@ -366,34 +337,35 @@ export default {
     })
 
     function proxPagina () {
+
+      // Entra se o valor da página atual for diferente do valor da ultima
+      // página 
       if (pagina.value !== Math.ceil(todosLivros.value.length / qntLivrosLista.value)) {
         pagina.value += 1
       }
     }
 
     function antecessorPagina () {
+
+      // Entra se o valor da página atual for diferente da página inicial
       if (pagina.value !== 1) {
         pagina.value -= 1
       }
     }
 
+    // Vai até a página selecionada
     function irPagina (numeroPagina) {
       pagina.value = numeroPagina
     }
 
-    const renderizar = ref(false)
-    const ehVazio = ref(true)
-
     function buscarLivro () {
       const busca = livroBuscadoInput.value
-      renderizar.value = true
 
       // Entra se o valor do input da busca for vazio
       if (busca === '') {
-        ehVazio.value = true
+        todosLivros.value = livros
 
       } else {
-        ehVazio.value = false
 
         for (const livro of livros) {
 
@@ -408,7 +380,7 @@ export default {
           if (tituloNormalize.includes(buscaNormalize) && busca !== '') {
 
             // Variavel livroBuscado rece o livro que o usuario digitou 
-            livroBuscado.value = livro
+            todosLivros.value = [livro]
           }
         }
       }
@@ -444,7 +416,7 @@ export default {
         livroFiltrado.value = livroFiltradoFilter
         todosLivros.value = livroFiltradoFilter
 
-      } else {
+      } else if (dataMinima.value <= 0 && dataMaxima.value > 0) {
         const livroFiltradoFilter = livros.filter((livro) => {
           const anoLivro = parseInt(livro.data.split('-')[0])
 
@@ -455,6 +427,8 @@ export default {
         livroFiltrado.value = livroFiltradoFilter
         todosLivros.value = livroFiltradoFilter
 
+      } else {
+        todosLivros.value = livros
       }
     }
 
@@ -550,10 +524,8 @@ export default {
       novaData,
       novaQnt,
       livroAntigo,
-      renderizar,
       exibirAlerta,
       mensagemAlerta,
-      ehVazio,
       buscarLivro,
       filtrarData,
       deletarLinha,

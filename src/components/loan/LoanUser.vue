@@ -54,7 +54,14 @@
                     @click.prevent="fazerEmprestimo()"
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
-                    class="btn btn-primary">Fazer Emprestimo
+                    class="btn btn-primary">Fazer Empréstimo
+                    </button>
+
+                    <button
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    @click.prevent="renovarEmprestimo()"
+                    class="btn btn-primary ms-3">Renovar Empréstimo
                     </button>
 
                     <div
@@ -217,6 +224,45 @@ export default {
       }
     }
 
+    function renovarEmprestimo () {
+
+      // Retorna o usuário selecionado
+      const usuarioSelecionado = usuarios.filter((usuario) => {
+        const userSemAcento = removeAcentos(usuario.nome).toLowerCase()
+
+        return userSemAcento === removeAcentos(nomeCliente.value).toLowerCase()
+               && usuario.cpf === cpfCliente.value
+      })
+
+      // Entra se o usuario selecionado não tiver nenhum empréstimo
+      if (usuarioSelecionado[0].livrosEmprestimos.length <= 0) {
+        tituloModal.value = 'Usuário não possui empréstimos'
+        mensagemModal.value = 'Até o momento o usuário ainda não realizou ' +
+                              'nenhum empréstimo'
+
+      } else {
+
+        // Data de devolução do emprestimo
+        const dataAtual = usuarioSelecionado[0].livrosEmprestimos[0].dataDevolucao
+
+        // Adiciona 7 dias na data de devolução
+        const renovarData = moment(dataAtual).add(7, 'days').format('YYYY-MM-DD')
+
+        // Substitui a data de devolução antiga pela nova
+        usuarioSelecionado[0].livrosEmprestimos[0].dataDevolucao = renovarData
+
+        // Salva a alteração no local storage
+        localStorage.setItem('usuarios', JSON.stringify(usuarios))
+
+        // Mensagem para o modal
+        tituloModal.value = 'Empréstimo renovado com sucesso'
+        mensagemModal.value = `O usuário ${usuarioSelecionado[0].nome} ` +
+                              `acaba de ganhar mais 7 dias para realizar ` +
+                              `a devolução do livro ${usuarioSelecionado[0].livrosEmprestimos[0].titulo}. ` +
+                              `Data de devolução: ${renovarData}`
+      }
+    }
+
     return {
       livros,
       usuarios,
@@ -227,7 +273,8 @@ export default {
       descModalError,
       tituloModal,
       mensagemModal,
-      fazerEmprestimo
+      fazerEmprestimo,
+      renovarEmprestimo
     }
   }
 
