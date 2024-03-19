@@ -281,7 +281,7 @@
 <script>
 /* eslint-disable */
 import { computed, ref } from 'vue'
-import { removeAcentos } from '@/funcoes'
+import { removeAcentos, arrayComputado } from '@/funcoes'
 
 export default {
   name: 'SearchBook',
@@ -330,11 +330,9 @@ export default {
     const todosLivros = ref(livros)
 
     // Limita a quantidade de livros mostrados
-    const listarLivros = computed(() => {
-      return todosLivros.value.slice(
-        (pagina.value - 1) * qntLivrosLista.value, pagina.value * qntLivrosLista.value
-      )
-    })
+    const listarLivros = computed(() => arrayComputado(
+      todosLivros.value, pagina.value, qntLivrosLista.value
+    ))
 
     function proxPagina () {
 

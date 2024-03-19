@@ -241,7 +241,7 @@
 /* eslint-disable */
 import { ref, computed } from 'vue'
 import { vMaska } from 'maska'
-import { removeAcentos } from '@/funcoes'
+import { removeAcentos, arrayComputado } from '@/funcoes'
 
 export default {
   name: 'SearchUser',
@@ -270,11 +270,9 @@ export default {
     const pagina = ref (1)
     const qntUsersLista = ref(10)
 
-    const listarUsuarios = computed(() => {
-      return todosUsuarios.value.slice(
-        (pagina.value - 1) * qntUsersLista.value, pagina.value * qntUsersLista.value
-      )
-    })
+    const listarUsuarios = computed(() => arrayComputado(
+      todosUsuarios.value, pagina.value, qntUsersLista.value
+    ))
 
     function proxPagina () {
       if (pagina.value !== Math.ceil(todosUsuarios.value.length / qntUsersLista.value)) {
