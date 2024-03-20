@@ -7,103 +7,120 @@
         </div>
 
         <form class="mt-4" action="">
-            <div class="row mb-3">
-                <div class="col">
-                    <label for="nomeCliente">Nome do cliente</label>
+          <div class="row mb-3">
+            <div class="col">
+              <label for="cpfCliente">CPF</label>
 
-                    <input
-                    v-model.trim="nomeCliente"
-                    type="text"
-                    id="nomeCliente"
-                    class="form-control">
+              <input
+              @change="selecionarCPF()"
+              v-maska
+              data-maska="###.###.###-##"
+              v-model.trim="cpfCliente"
+              type="text"
+              id="cpfCliente"
+              class="form-control">
 
-                </div>
             </div>
+          </div>
 
             <div class="row mb-3">
               <div class="col">
-                <label for="cpfCliente">CPF</label>
+                <label for="nomeCliente">Nome do cliente</label>
 
                 <input
-                v-maska
-                data-maska="###.###.###-##"
-                v-model.trim="cpfCliente"
+                disabled
+                readonly
+                v-model="nomeCliente"
                 type="text"
-                id="cpfCliente"
+                id="nomeCliente"
                 class="form-control">
 
               </div>
             </div>
 
             <div class="row mb-3">
-                <div class="col">
-                    <label for="nomeLivro">Nome do livro</label>
+              <div class="col">
+                <label for="usuarioCliente">Usuário</label>
 
-                    <input
-                    v-model.trim="nomeLivro"
-                    type="text"
-                    id="nomeLivro"
-                    class="form-control">
+                <input
+                disabled readonly
+                v-model="usuarioCliente"
+                type="text"
+                id="usuarioCliente"
+                class="form-control">
 
-                </div>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col">
+                <label for="nomeLivro">Nome do livro</label>
+
+                <input
+                v-model.trim="nomeLivro"
+                type="text"
+                id="nomeLivro"
+                class="form-control">
+
+              </div>
             </div>
 
             <div class="row">
-                <div class="col">
-                    <button
-                    @click.prevent="fazerEmprestimo()"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
-                    class="btn btn-primary">Fazer Empréstimo
-                    </button>
+              <div class="col">
+                <button
+                @click.prevent="fazerEmprestimo()"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+                class="btn btn-primary">Fazer Empréstimo
+                </button>
 
-                    <button
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
-                    @click.prevent="renovarEmprestimo()"
-                    class="btn btn-primary ms-3">Renovar Empréstimo
-                    </button>
+                <button
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+                @click.prevent="renovarEmprestimo()"
+                class="btn btn-primary ms-3">Renovar Empréstimo
+                </button>
 
-                    <div
-                    class="modal fade"
-                    id="exampleModal"
-                    tabindex="-1"
-                    aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
+                  <div
+                  class="modal fade"
+                  id="exampleModal"
+                  tabindex="-1"
+                  aria-labelledby="exampleModalLabel"
+                  aria-hidden="true">
 
-                      <div class="modal-dialog">
-                        <div class="modal-content">
-                          <div class="modal-header">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
 
-                            <h1
-                            class="modal-title fs-5"
-                            id="exampleModalLabel">{{ tituloModal }}
-                            </h1>
+                          <h1
+                          class="modal-title fs-5"
+                          id="exampleModalLabel">{{ tituloModal }}
+                          </h1>
 
-                            <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close">
-                            </button>
+                          <button
+                          type="button"
+                          class="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close">
+                          </button>
 
-                          </div>
-                          <div class="modal-body">
-                            {{ mensagemModal }}
-                          </div>
-                          <div class="modal-footer">
+                        </div>
+                        <div class="modal-body">
+                          {{ mensagemModal }}
+                        </div>
+                        <div class="modal-footer">
 
-                            <button
-                            type="button"
-                            class="btn btn-primary"
-                            data-bs-dismiss="modal">Fechar
-                            </button>
+                          <button
+                          type="button"
+                          class="btn btn-primary"
+                          data-bs-dismiss="modal">Fechar
+                          </button>
 
-                          </div>
                         </div>
                       </div>
-                  </div>
+                    </div>
                 </div>
+              </div>
             </div>
         </form>
     </div>
@@ -131,6 +148,8 @@ export default {
     // Variaveis para receber os valores dos campos inputs
     const nomeCliente = ref('')
     const nomeLivro = ref('')
+    const usuarioCliente = ref('')
+    const userSelecionado = ref([])
     const cpfCliente = ref('')
 
     //Variaveis para as mensagens no modal
@@ -141,17 +160,23 @@ export default {
     const descModalError = 'O livro ou usuário que você digitou não consta ' +
                            'no sistema, verifique novamente os dados digitados'
 
-    function fazerEmprestimo () {
+    function selecionarCPF () {
+      const usuarioSelecionado = usuarios.filter((usuario) => {
+        return usuario.cpf === cpfCliente.value
+      })
 
-      // Removendo acentuação e dexando em lower case o valor do input
-      // nomeCliente
-      const cliente = removeAcentos(nomeCliente.value).toLowerCase()
+      if (usuarioSelecionado.length > 0) {
+        userSelecionado.value = usuarioSelecionado[0]
+        nomeCliente.value = usuarioSelecionado[0].nome
+        usuarioCliente.value = usuarioSelecionado[0].usuario
+      }
+    }
+
+    function fazerEmprestimo () {
 
       // Removendo acentuação e dexando em lower case o valor do input
       // nomeLivro
       const livroEmprestimo = removeAcentos(nomeLivro.value).toLowerCase()
-
-      const clienteCPF = cpfCliente.value
 
       // Data da devolução
       const dataD = moment().add(7, 'days').format('YYYY-MM-DD')
@@ -165,9 +190,8 @@ export default {
 
       // Retorna um array com o usuario selecionado
       const usuarioSelecionado = usuarios.filter((usuario) => {
-        const nomeUserNormalize = removeAcentos(usuario.nome).toLowerCase()
 
-        return nomeUserNormalize.includes(cliente) && usuario.cpf === clienteCPF
+        return usuario.cpf === cpfCliente.value
       })
 
       // Entra se o array do livro ou usuario for vazio
@@ -182,7 +206,7 @@ export default {
         mensagemModal.value = 'O livro não tem quantidade suficiente para '+
                               'realizar um empréstimo'
 
-      } else if (cliente === '' || livroEmprestimo === '' || clienteCPF === '') {
+      } else if (livroEmprestimo === '' || cpfCliente.value === '') {
         tituloModal.value = 'Campos não preenchidos'
         mensagemModal.value = 'Preencha todos os campos para realizar o ' +
                               'empréstimo'
@@ -228,10 +252,14 @@ export default {
 
       // Retorna o usuário selecionado
       const usuarioSelecionado = usuarios.filter((usuario) => {
-        const userSemAcento = removeAcentos(usuario.nome).toLowerCase()
 
-        return userSemAcento === removeAcentos(nomeCliente.value).toLowerCase()
-               && usuario.cpf === cpfCliente.value
+        return usuario.cpf === cpfCliente.value
+      })
+
+      const livroSelecionado = livros.filter((livro) => {
+        const tituloNormalize = removeAcentos(livro.titulo).toLowerCase()
+        
+        return tituloNormalize.includes(livroEmprestimo)
       })
 
       // Entra se o usuario selecionado não tiver nenhum empréstimo
@@ -267,6 +295,8 @@ export default {
       livros,
       usuarios,
       nomeCliente,
+      usuarioCliente,
+      userSelecionado,
       nomeLivro,
       cpfCliente,
       tituloModalError,
@@ -274,7 +304,8 @@ export default {
       tituloModal,
       mensagemModal,
       fazerEmprestimo,
-      renovarEmprestimo
+      renovarEmprestimo,
+      selecionarCPF
     }
   }
 

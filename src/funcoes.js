@@ -11,15 +11,19 @@ export function arrayComputado (arrayCompleto, pagina, qntElementos) {
 }
 
 export function filtrarNome (array, texto, livro = false) {
-  array.filter((item) => {
-    if (livro) {
-      // Retorna o livro armazenado no local storage que tiver o titulo igual
-      // ao titulo da linha que o usuario deseja deletar
-      return item.titulo === texto
-    }
+  const arrayLivro = array.filter((item) => {
+    return item.titulo === texto
+  })
 
+  const arrayUsuario = array.filter((item) => {
     return item.nome === texto
   })
+
+  if (livro) {
+    return arrayLivro
+  }
+
+  return arrayUsuario
 }
 
 export function validaCPF (strCPF) {
