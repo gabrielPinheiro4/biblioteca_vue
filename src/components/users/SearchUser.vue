@@ -136,7 +136,7 @@
                                     <label for="novoCPF">CPF</label>
 
                                     <input
-                                    v-maska
+                                    v-maska="novoCPFSemMascara"
                                     data-maska="###.###.###-##"
                                     v-model.trim="novoCPF"
                                     type="text"
@@ -241,7 +241,7 @@
 /* eslint-disable */
 import { ref, computed } from 'vue'
 import { vMaska } from 'maska'
-import { removeAcentos, arrayComputado } from '@/funcoes'
+import { removeAcentos, arrayComputado, filtrarNome, validaCPF } from '@/funcoes'
 
 export default {
   name: 'SearchUser',
@@ -258,6 +258,7 @@ export default {
     const novoUser = ref('')
     const novoCPF = ref('')
     const novoEndereco = ref('')
+    const novoCPFSemMascara = ref({})
 
     const mensagemAlerta = ref('')
 
@@ -315,12 +316,13 @@ export default {
       const textElement = event.target.parentElement.parentElement.childNodes[0].outerText
 
       // Retorna o livro selecionado no local storage
-      const livroSelecionado = usuarios.filter((usuario) => {
+      // const livroSelecionado = filtrarNome(usuarios, textElement)
+      const usuarioSelecionado = usuarios.filter((usuario) => {
         return usuario.nome === textElement
       })
       
       // Pega o index do livro no array
-      const indexUsuarioRemove = usuarios.indexOf(livroSelecionado[0])
+      const indexUsuarioRemove = usuarios.indexOf(usuarioSelecionado[0])
 
       // Remove o objeto
       usuarios.splice(indexUsuarioRemove, 1)
@@ -375,6 +377,11 @@ export default {
         exibirAlerta.value = true
         setTimeout(() => {exibirAlerta.value = false}, 4000)
 
+      } else if (!validaCPF(novoCPFSemMascara.value.unmasked)) {
+        mensagemAlerta.value = 'CPF inválido'
+        exibirAlerta.value = true
+        setTimeout(() => {exibirAlerta.value = false}, 4000)
+        
       } else {
 
         // Retorna o usuario selecionado no local storage
@@ -403,6 +410,7 @@ export default {
       novoNome,
       novoUser,
       novoCPF,
+      novoCPFSemMascara,
       novoEndereco,
       exibirAlerta,
       usuarioAntigo,

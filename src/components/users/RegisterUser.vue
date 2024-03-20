@@ -36,7 +36,7 @@
                 <label for="cpf">CPF</label>
 
                 <input
-                v-maska
+                v-maska="cpfSemMascara"
                 data-maska="###.###.###-##"
                 v-model.trim="cpfInput"
                 type="text" id="cpf"
@@ -115,6 +115,7 @@
 /* eslint-disable */
 import { ref } from 'vue'
 import { vMaska, } from 'maska'
+import { validaCPF } from '@/funcoes'
 
 export default {
   name: 'RegisterView',
@@ -130,6 +131,8 @@ export default {
     const tituloModal = ref('')
     const mensagemModal = ref('')
     const usuarioJaCadastrado = ref(false)
+    const cpfSemMascara = ref({})
+    
 
     let usuarios = JSON.parse(localStorage.getItem('usuarios'))
 
@@ -158,6 +161,10 @@ export default {
         tituloModal.value = 'Usuário já cadastrado'
         mensagemModal.value = 'O nome de usuário ou o CPF já está cadastrado no sistema'
 
+      } else if (!validaCPF(cpfSemMascara.value.unmasked)) {
+        tituloModal.value = 'CPF incorreto'
+        mensagemModal.value = 'O CPF que você digitou não é válido'
+
       } else {
         tituloModal.value = 'Usuário cadastrado com sucesso'
         mensagemModal.value = 'O usuário foi cadastrado com sucesso, você pode verifica-lo na página "Consultar Usuários"'
@@ -170,17 +177,19 @@ export default {
           livrosEmprestimos: []
         }
 
+        
         usuarios.push(novoUsuario)
-
+        
         localStorage.setItem('usuarios', JSON.stringify(usuarios))
       }
-  }
+    }
 
     return {
       nomeCompleto,
       usuarioInput,
       enderecoInput,
       cpfInput,
+      cpfSemMascara,
       tituloModal,
       usuarioJaCadastrado,
       mensagemModal,
