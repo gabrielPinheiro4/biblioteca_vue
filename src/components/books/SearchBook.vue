@@ -287,17 +287,22 @@ export default {
   name: 'SearchBook',
 
   setup () {
-    
+
     // Variavel que recebe os dados do local storage
-    const livros = JSON.parse(localStorage.getItem('livros'))
+    let livros = JSON.parse(localStorage.getItem('livros'))
+    let historico = JSON.parse(localStorage.getItem('historico'))
 
-    // Variavel para o input de pequisa
+    if (livros === null) {
+      livros = []
+    }
+
+    if (historico === null) {
+      historico = []
+    }
+
+    // Variavel para os inputs do formulario
     const livroBuscadoInput = ref('')
-
-    // Variavel para o input da data minima
     const dataMinima = ref('')
-
-    // Variavel para o input da data maxima
     const dataMaxima = ref('')
 
     // Variavel para guardar os dados do livro buscado
@@ -493,8 +498,8 @@ export default {
       } else {
 
         const livroSelecionado = livros.filter((livro) => {
-          return livro.titulo === livroAntigo.value.titulo && 
-                 livro.autor === livroAntigo.value.autor
+          return livro.titulo.trim() === livroAntigo.value.titulo.trim() 
+                 && livro.autor.trim() === livroAntigo.value.autor.trim()
         })
 
         livroSelecionado[0].titulo = novoTitulo.value
@@ -511,6 +516,7 @@ export default {
 
     return {
       livros,
+      historico,
       livroBuscadoInput,
       dataMinima,
       dataMaxima,
@@ -524,24 +530,24 @@ export default {
       livroAntigo,
       exibirAlerta,
       mensagemAlerta,
+      listarLivros,
+      pagina,
+      qntLivrosLista,
+      todosLivros,
       buscarLivro,
       filtrarData,
       deletarLinha,
       editarLivro,
       salvarLivroEditado,
-      pagina,
-      listarLivros,
       proxPagina,
       antecessorPagina,
-      irPagina,
-      qntLivrosLista,
-      todosLivros
+      irPagina
     }
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .page-link{
   cursor: pointer;
 }

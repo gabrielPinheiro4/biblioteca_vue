@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 export function removeAcentos (string) {
   return string.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }
@@ -58,4 +60,24 @@ export function validaCPF (strCPF) {
   if ((resto === 10) || (resto === 11)) resto = 0
   if (resto !== parseInt(strCPF.substring(10, 11))) return false
   return true
+}
+
+export function salvarHistorico (funcao, user, livro, valorAntigo, valorNovo) {
+  moment.locale('pt')
+  let historico = JSON.parse(localStorage.getItem('historico'))
+
+  if (historico === null) {
+    historico = []
+  }
+
+  historico.unshift({
+    metodo: funcao,
+    usuarioFuncao: user,
+    livroFuncao: livro,
+    valorAntigo: valorAntigo,
+    valorNovo: valorNovo,
+    dataRealizada: moment().format('LLLL')
+  })
+
+  localStorage.setItem('historico', JSON.stringify(historico))
 }

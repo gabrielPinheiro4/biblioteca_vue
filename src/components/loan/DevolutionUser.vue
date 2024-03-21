@@ -56,7 +56,12 @@
               <div class="col">
                 <label for="livrosDevolucao">Livros para devolução</label>
 
-                <select v-model="livroSelect" id="livrosDevolucao" class="form-select" aria-label="Default select example">
+                <select
+                v-model="livroSelect"
+                id="livrosDevolucao"
+                class="form-select"
+                aria-label="Default select example">
+
                   <option selected disabled >Selecione um livro</option>
                   <option
                     v-for="livro in userSelecionado.livrosEmprestimos"
@@ -143,10 +148,18 @@ export default {
     const tituloModal = ref('')
     const mensagemModal = ref ('')
     const usuarioCliente = ref('')
-    const usuarios = JSON.parse(localStorage.getItem('usuarios'))
-    const livros = JSON.parse(localStorage.getItem('livros'))
     const livroSelecionadoDevolucao = ref({})
+    let usuarios = JSON.parse(localStorage.getItem('usuarios'))
+    let livros = JSON.parse(localStorage.getItem('livros'))
 
+    if (usuarios === null) {
+      usuarios = []
+    }
+
+    if (livros === null) {
+      livros = []
+    }
+    
     const tituloModalError = 'Livro ou usuário não encontrado'
     const descModalError = 'O livro ou usuário que você digitou não consta ' +
                            'no sistema, verifique novamente os dados digitados'

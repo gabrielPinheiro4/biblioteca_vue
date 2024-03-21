@@ -115,7 +115,7 @@
 /* eslint-disable */
 import { ref } from 'vue'
 import { vMaska, } from 'maska'
-import { validaCPF } from '@/funcoes'
+import { validaCPF, salvarHistorico } from '@/funcoes'
 
 export default {
   name: 'RegisterView',
@@ -177,11 +177,12 @@ export default {
           livrosEmprestimos: []
         }
 
-        
         usuarios.push(novoUsuario)
         
         localStorage.setItem('usuarios', JSON.stringify(usuarios))
+        salvarHistorico('Cadastro de usuário', novoUsuario,'', '', '')
       }
+
     }
 
     return {

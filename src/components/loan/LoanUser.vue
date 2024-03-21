@@ -142,8 +142,16 @@ export default {
   setup () {
 
     // Variaveis p guardar os valores salvos no local storage
-    const livros = JSON.parse(localStorage.getItem('livros'))
-    const usuarios = JSON.parse(localStorage.getItem('usuarios'))
+    let livros = JSON.parse(localStorage.getItem('livros'))
+    let usuarios = JSON.parse(localStorage.getItem('usuarios'))
+
+    if (livros === null) {
+      livros = []
+    }
+
+    if (usuarios === null) {
+      usuarios = []
+    }
 
     // Variaveis para receber os valores dos campos inputs
     const nomeCliente = ref('')
@@ -250,16 +258,18 @@ export default {
 
     function renovarEmprestimo () {
 
+      const nomeLivroSemAcento = removeAcentos(nomeLivro.value).toLowerCase()
+
       // Retorna o usuário selecionado
       const usuarioSelecionado = usuarios.filter((usuario) => {
 
         return usuario.cpf === cpfCliente.value
       })
 
-      const livroSelecionado = livros.filter((livro) => {
+      const livroSelecionado = usuarioSelecionado[0].livrosEmprestimos.filter((livro) => {
         const tituloNormalize = removeAcentos(livro.titulo).toLowerCase()
         
-        return tituloNormalize.includes(livroEmprestimo)
+        return tituloNormalize.includes(nomeLivroSemAcento)
       })
 
       // Entra se o usuario selecionado não tiver nenhum empréstimo
@@ -271,13 +281,13 @@ export default {
       } else {
 
         // Data de devolução do emprestimo
-        const dataAtual = usuarioSelecionado[0].livrosEmprestimos[0].dataDevolucao
+        const dataAtual = livroSelecionado[0].dataDevolucao
 
         // Adiciona 7 dias na data de devolução
         const renovarData = moment(dataAtual).add(7, 'days').format('YYYY-MM-DD')
 
         // Substitui a data de devolução antiga pela nova
-        usuarioSelecionado[0].livrosEmprestimos[0].dataDevolucao = renovarData
+        livroSelecionado[0].dataDevolucao = renovarData
 
         // Salva a alteração no local storage
         localStorage.setItem('usuarios', JSON.stringify(usuarios))
@@ -286,7 +296,7 @@ export default {
         tituloModal.value = 'Empréstimo renovado com sucesso'
         mensagemModal.value = `O usuário ${usuarioSelecionado[0].nome} ` +
                               `acaba de ganhar mais 7 dias para realizar ` +
-                              `a devolução do livro ${usuarioSelecionado[0].livrosEmprestimos[0].titulo}. ` +
+                              `a devolução do livro ${livroSelecionado[0].titulo}. ` +
                               `Data de devolução: ${renovarData}`
       }
     }

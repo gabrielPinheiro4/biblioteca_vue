@@ -7,19 +7,24 @@ const routes = [
     component: () => import('../views/HomeView.vue')
   },
   {
-    path: '/book',
+    path: '/livros',
     name: 'book',
     component: () => import('../views/BookView.vue')
   },
   {
-    path: '/users',
+    path: '/usuarios',
     name: 'users',
     component: () => import('../views/UsersView.vue')
   },
   {
-    path: '/loan',
+    path: '/emprestimodevolucao',
     name: 'loan',
     component: () => import('../views/LoanDevolutionView.vue')
+  },
+  {
+    path: '/historico',
+    name: 'historico',
+    component: () => import('../views/HistoricView.vue')
   }
 ]
 

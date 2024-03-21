@@ -105,7 +105,13 @@
                 Seu livro foi cadastrado com sucesso, você pode verifica-lo na página "Consultar Livros"
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fechar</button>
+
+                <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal">Fechar
+                </button>
+
               </div>
             </div>
           </div>
@@ -137,18 +143,46 @@
       </div>
 
       <div class="col">
-        <button @click.prevent="cadastrarLote()"  data-bs-toggle="modal" data-bs-target="#modalLote" class="btn btn-primary">Cadastrar em Lote</button>
 
-        <div class="modal fade" id="modalLote" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <button
+        @click.prevent="cadastrarLote()"
+        data-bs-toggle="modal"
+        data-bs-target="#modalLote"
+        class="btn btn-primary">Cadastrar em Lote
+        </button>
+
+        <div
+        class="modal fade"
+        id="modalLote"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">{{ tituloModal }}</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h1
+                class="modal-title fs-5"
+                id="exampleModalLabel">{{ tituloModal }}
+                </h1>
+
+                <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"></button>
+
               </div>
               <div class="modal-body">{{ descModal }}</div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fechar</button>
+
+                <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal">Fechar
+                </button>
+
               </div>
             </div>
           </div>
@@ -163,6 +197,7 @@
 /* eslint-disable */
 import { ref } from 'vue'
 import * as d3 from 'd3'
+import { salvarHistorico } from '@/funcoes'
 
 export default {
   name: 'RegisterBook',
@@ -193,7 +228,11 @@ export default {
     }
 
     function cadastrarLivro () {
-      if (nomeLivro.value === '' || autorLivro.value === '' || generoLivro.value === '' || quantidadeLivro.value === '' || dataLivro.value === '') {
+      if (nomeLivro.value === '' ||
+          autorLivro.value === '' ||
+          generoLivro.value === '' ||
+          quantidadeLivro.value === '' ||
+          dataLivro.value === '') {
         tituloModal.value = 'Campos não preenchidos'
         descModal.value = 'Preencha todos os campos para cadastrar o livro'
 
@@ -215,6 +254,7 @@ export default {
 
         // Atualiza o local storage
         localStorage.setItem('livros', JSON.stringify(storage))
+        salvarHistorico('Cadastro de livro', '', novosDados, '', '')
       }
     }
 
@@ -261,12 +301,11 @@ export default {
           localStorage.setItem('livros', JSON.stringify(storage))
         }
         reader.readAsText(arquivoEnviado)
+        salvarHistorico('Cadastro de livro em lote', '', '', '', '')
       }
     }
 
     return {
-      cadastrarLivro,
-      cadastrarLote,
       nomeLivro,
       autorLivro,
       generoLivro,
@@ -275,7 +314,9 @@ export default {
       arquivo,
       dadosCsv,
       tituloModal,
-      descModal
+      descModal,
+      cadastrarLivro,
+      cadastrarLote
     }
   }
 }

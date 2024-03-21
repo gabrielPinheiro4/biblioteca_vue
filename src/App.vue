@@ -19,24 +19,32 @@
           <li class="nav-item">
 
             <router-link
-              class="nav-link" to="/book">Livros
+              class="nav-link" to="/livros">Livros
             </router-link>
 
           </li>
           <li class="nav-item">
 
             <router-link
-              class="nav-link" to="/loan">Empréstimo/Devolução
+              class="nav-link" to="/emprestimodevolucao">Empréstimo/Devolução
             </router-link>
 
           </li>
           <li class="nav-item">
 
             <router-link
-              class="nav-link" to="/users">Usuários
+              class="nav-link" to="/usuarios">Usuários
             </router-link>
 
           </li>
+
+          <li class="nav-item">
+
+          <router-link
+            class="nav-link" to="/historico">Histórico
+          </router-link>
+
+        </li>
         </ul>
       </div>
     </div>

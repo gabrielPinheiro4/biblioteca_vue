@@ -250,9 +250,13 @@ export default {
   },
 
   setup () {
-    const usuarios = JSON.parse(localStorage.getItem('usuarios'))
+    let usuarios = JSON.parse(localStorage.getItem('usuarios'))
     const nomeBuscadoInput = ref(null)
     const editButton = ref(null)
+
+    if (usuarios === null) {
+      usuarios = []
+    }
 
     const novoNome = ref('')
     const novoUser = ref('')
