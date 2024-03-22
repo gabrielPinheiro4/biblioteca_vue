@@ -281,7 +281,7 @@
 <script>
 /* eslint-disable */
 import { computed, ref } from 'vue'
-import { removeAcentos, arrayComputado } from '@/funcoes'
+import { removeAcentos, arrayComputado, salvarHistorico } from '@/funcoes'
 
 export default {
   name: 'SearchBook',
@@ -458,6 +458,8 @@ export default {
 
       // Atualiza a pagina para ver as mudanças
       window.location.reload()
+
+      salvarHistorico('Deletar livro', livroSelecionado[0], '', livroSelecionado[0], '')
     }
 
     function editarLivro (event) {
@@ -511,6 +513,8 @@ export default {
         localStorage.setItem('livros', JSON.stringify(livros))
 
         window.location.reload()
+
+        salvarHistorico('Editar livro', livroAntigo.value, '', livroAntigo.value, livroSelecionado[0])
       }
     }
 

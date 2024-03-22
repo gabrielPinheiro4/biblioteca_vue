@@ -62,7 +62,7 @@ export function validaCPF (strCPF) {
   return true
 }
 
-export function salvarHistorico (funcao, user, livro, valorAntigo, valorNovo) {
+export function salvarHistorico (funcao, userLivro, emprestimoDevolucao, valorAntigo, valorNovo) {
   moment.locale('pt')
   let historico = JSON.parse(localStorage.getItem('historico'))
 
@@ -72,8 +72,8 @@ export function salvarHistorico (funcao, user, livro, valorAntigo, valorNovo) {
 
   historico.unshift({
     metodo: funcao,
-    usuarioFuncao: user,
-    livroFuncao: livro,
+    usuarioLivro: userLivro,
+    emprestimoDevolucao: emprestimoDevolucao,
     valorAntigo: valorAntigo,
     valorNovo: valorNovo,
     dataRealizada: moment().format('LLLL')

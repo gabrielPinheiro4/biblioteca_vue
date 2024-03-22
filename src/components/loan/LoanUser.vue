@@ -130,7 +130,7 @@
 /* eslint-disable */
 import { ref } from 'vue'
 import moment from 'moment'
-import { removeAcentos } from '@/funcoes'
+import { removeAcentos, salvarHistorico } from '@/funcoes'
 import { vMaska } from 'maska'
 
 export default {
@@ -253,6 +253,7 @@ export default {
         // Salva as alterações no local storage
         localStorage.setItem('usuarios', JSON.stringify(usuarios))
         localStorage.setItem('livros', JSON.stringify(livros))
+        salvarHistorico('Empréstimo', usuarioSelecionado[0], livroAtt, '', '')
       }
     }
 
@@ -291,6 +292,8 @@ export default {
 
         // Salva a alteração no local storage
         localStorage.setItem('usuarios', JSON.stringify(usuarios))
+
+        salvarHistorico('Renovar empréstimo', usuarioSelecionado[0], livroSelecionado[0], '', '')
 
         // Mensagem para o modal
         tituloModal.value = 'Empréstimo renovado com sucesso'

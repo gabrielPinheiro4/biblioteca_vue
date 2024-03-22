@@ -254,7 +254,7 @@ export default {
 
         // Atualiza o local storage
         localStorage.setItem('livros', JSON.stringify(storage))
-        salvarHistorico('Cadastro de livro', '', novosDados, '', '')
+        salvarHistorico('Cadastro de livro', novosDados, '', '', '')
       }
     }
 

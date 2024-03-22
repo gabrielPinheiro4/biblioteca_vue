@@ -241,7 +241,7 @@
 /* eslint-disable */
 import { ref, computed } from 'vue'
 import { vMaska } from 'maska'
-import { removeAcentos, arrayComputado, filtrarNome, validaCPF } from '@/funcoes'
+import { removeAcentos, arrayComputado, validaCPF, salvarHistorico } from '@/funcoes'
 
 export default {
   name: 'SearchUser',
@@ -336,6 +336,8 @@ export default {
 
       // Recarrega a pagina
       window.location.reload()
+
+      salvarHistorico('Deletar usuário', usuarioSelecionado[0], '', usuarioSelecionado[0], '')
     }
 
     function editarUsuario(event) {
@@ -404,6 +406,8 @@ export default {
 
         // Recarrega a tela 
         window.location.reload()
+
+        salvarHistorico('Editar usuário', usuarioAntigo.value, '', usuarioAntigo.value, usuarioSelecionado[0])
       }
     }
 
@@ -418,17 +422,17 @@ export default {
       novoEndereco,
       exibirAlerta,
       usuarioAntigo,
-      buscarUsuario,
       mensagemAlerta,
-      deletarLinha,
-      editarUsuario,
       listarUsuarios,
       pagina,
+      qntUsersLista,
+      todosUsuarios,
+      deletarLinha,
+      editarUsuario,
+      buscarUsuario,
       proxPagina,
       antecessorPagina,
       irPagina,
-      qntUsersLista,
-      todosUsuarios,
       salvarUsuarioEditado
     }
   }

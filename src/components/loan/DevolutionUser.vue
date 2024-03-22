@@ -132,6 +132,7 @@
 /* eslint-disable */
 import { ref } from 'vue'
 import { vMaska } from 'maska'
+import { salvarHistorico } from '@/funcoes'
 
 export default {
   name: 'DevolutionUser',
@@ -228,6 +229,7 @@ export default {
 
         localStorage.setItem('usuarios', JSON.stringify(usuarios))
         localStorage.setItem('livros', JSON.stringify(livros))
+        salvarHistorico('Devolução', userSelecionado.value, livroAtt, '', '')
       }
     }
 
