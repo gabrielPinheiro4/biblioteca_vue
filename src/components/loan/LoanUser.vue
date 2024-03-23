@@ -12,7 +12,7 @@
               <label for="cpfCliente">CPF</label>
 
               <input
-              @change="selecionarCPF()"
+              @change="selecionarCPF($event)"
               v-maska
               data-maska="###.###.###-##"
               v-model.trim="cpfCliente"
@@ -168,15 +168,22 @@ export default {
     const descModalError = 'O livro ou usuário que você digitou não consta ' +
                            'no sistema, verifique novamente os dados digitados'
 
-    function selecionarCPF () {
+    function selecionarCPF (event) {
       const usuarioSelecionado = usuarios.filter((usuario) => {
         return usuario.cpf === cpfCliente.value
       })
 
       if (usuarioSelecionado.length > 0) {
+        event.target.classList.remove('border-danger')
+
         userSelecionado.value = usuarioSelecionado[0]
         nomeCliente.value = usuarioSelecionado[0].nome
         usuarioCliente.value = usuarioSelecionado[0].usuario
+
+      } else {
+        event.target.classList.add('border-danger')
+        usuarioCliente.value = 'Usuário não encontrado'
+        nomeCliente.value = 'Usuário não encontrado'
       }
     }
 

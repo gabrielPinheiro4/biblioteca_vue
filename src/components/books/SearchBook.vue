@@ -9,14 +9,25 @@
         <div class="row align-items-center mt-3 flex-wrap">
             <form action="" class=" col-6 form mt-3">
             <div class="row align-items-end">
-                <div class="col">
+                <div class="col position-relative">
                     <label for="pesquisar" class="form-label">Buscar livro</label>
 
                     <input
+                    autocomplete="off"
                     v-model.trim="livroBuscadoInput"
                     type="text"
                     id="pesquisar"
                     class="form-control">
+
+                    <ul v-if="livroBuscadoInput.length > 0" class="list-group position-absolute">
+                      <li
+                        v-for="item in elementosBusca"
+                        :value="item.valor"
+                        @click="buscarCategoria($event)"
+                        :key="item"
+                        class="list-group-item">{{ item.texto }}{{ livroBuscadoInput }}
+                      </li>
+                    </ul>
 
                   </div>
 
@@ -90,14 +101,6 @@
                     <td>{{ livro.genero }}</td>
                     <td>{{ livro.data }}</td>
                     <td>{{ livro.quantidade }}</td>
-
-                    <td>
-                      <button
-                      @click="deletarLinha($event)"
-                      type="button"
-                      class="btn btn-danger">Deletar
-                      </button>
-                    </td>
 
                     <td>
                       <button
@@ -232,6 +235,14 @@
                       </div>
                     </td>
 
+                    <td>
+                      <button
+                      @click="deletarLinha($event)"
+                      type="button"
+                      class="btn btn-danger">Deletar
+                      </button>
+                    </td>
+
                 </tr>
             </tbody>
         </table>
@@ -318,6 +329,16 @@ export default {
     const novaData = ref('')
     const novaQnt = ref('')
 
+    const elementosBusca = ref(
+      [
+        {valor: 'titulo', texto: 'Procurar título por: '},
+        {valor: 'autor', texto: 'Procurar autor por: '},
+        {valor: 'genero', texto: 'Procurar gênero por: '},
+      ]
+    )
+
+    const categoariaBuscada = ref('')
+
     // Variaveis para o alerta
     const exibirAlerta = ref(false)
     const mensagemAlerta = ref('')
@@ -359,6 +380,54 @@ export default {
     // Vai até a página selecionada
     function irPagina (numeroPagina) {
       pagina.value = numeroPagina
+    }
+
+    function buscarCategoria (event) {
+      categoariaBuscada.value = event.target._value
+      const busca = removeAcentos(livroBuscadoInput.value).toLowerCase()
+      const livrosListados = []
+
+      if (busca === '') {
+        todosLivros.value = livros
+
+      } else {
+
+        for (const livro of livros) {
+          
+          switch (categoariaBuscada.value) {
+
+            case 'titulo':
+              const tituloSemAcento = removeAcentos(livro.titulo).toLowerCase()
+
+              if (tituloSemAcento.includes(busca) && busca !== '') {
+                livrosListados.push(livro)
+                todosLivros.value = livrosListados
+              }
+
+              break
+
+            case 'autor':
+              const autorSemAcento = removeAcentos(livro.autor).toLowerCase()
+
+              if (autorSemAcento.includes(busca) && busca !== '') {
+                livrosListados.push(livro)
+                todosLivros.value = livrosListados
+              }
+
+              break
+
+            case 'genero':
+              const generoSemAcento = removeAcentos(livro.genero).toLowerCase()
+
+              if (generoSemAcento.includes(busca) && busca !== '') {
+                livrosListados.push(livro)
+                todosLivros.value = livrosListados
+              }
+
+              break
+          }
+        }
+      }
     }
 
     function buscarLivro () {
@@ -522,6 +591,8 @@ export default {
       livros,
       historico,
       livroBuscadoInput,
+      elementosBusca,
+      categoariaBuscada,
       dataMinima,
       dataMaxima,
       livroBuscado,
@@ -539,6 +610,7 @@ export default {
       qntLivrosLista,
       todosLivros,
       buscarLivro,
+      buscarCategoria,
       filtrarData,
       deletarLinha,
       editarLivro,
@@ -554,6 +626,13 @@ export default {
 <style lang="scss">
 .page-link{
   cursor: pointer;
+}
+
+.list-group-item{
+  cursor: pointer;
+  &:hover{
+    background: #ddd;
+  }
 }
 
 </style>

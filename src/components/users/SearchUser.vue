@@ -63,14 +63,6 @@
 
                     <td>
                       <button
-                      @click="deletarLinha($event)"
-                      type="button"
-                      class="btn btn-danger">Deletar
-                    </button>
-                    </td>
-
-                    <td>
-                      <button
                       @click.prevent="editarUsuario($event)"
                       class="btn btn-secondary"
                       ref="editButton"
@@ -191,6 +183,15 @@
                       </div>
 
                     </td>
+
+                    <td>
+                      <button
+                      @click="deletarLinha($event)"
+                      type="button"
+                      class="btn btn-danger">Deletar
+                    </button>
+                  </td>
+
                 </tr>
             </tbody>
         </table>
