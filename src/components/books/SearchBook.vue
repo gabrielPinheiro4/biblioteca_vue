@@ -337,8 +337,6 @@ export default {
       ]
     )
 
-    const categoariaBuscada = ref('')
-
     // Variaveis para o alerta
     const exibirAlerta = ref(false)
     const mensagemAlerta = ref('')
@@ -383,9 +381,9 @@ export default {
     }
 
     function buscarCategoria (event) {
-      categoariaBuscada.value = event.target._value
       const busca = removeAcentos(livroBuscadoInput.value).toLowerCase()
       const livrosListados = []
+      livroBuscadoInput.value = ''
 
       if (busca === '') {
         todosLivros.value = livros
@@ -393,8 +391,8 @@ export default {
       } else {
 
         for (const livro of livros) {
-          
-          switch (categoariaBuscada.value) {
+
+          switch (event.target._value) {
 
             case 'titulo':
               const tituloSemAcento = removeAcentos(livro.titulo).toLowerCase()
@@ -592,7 +590,6 @@ export default {
       historico,
       livroBuscadoInput,
       elementosBusca,
-      categoariaBuscada,
       dataMinima,
       dataMaxima,
       livroBuscado,
@@ -622,17 +619,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.page-link{
-  cursor: pointer;
-}
-
-.list-group-item{
-  cursor: pointer;
-  &:hover{
-    background: #ddd;
-  }
-}
-
-</style>

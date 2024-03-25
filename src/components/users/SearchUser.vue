@@ -17,11 +17,21 @@
                     </label>
 
                     <input
-                    ref="nomeBuscadoInput"
+                    autocomplete="off"
+                    v-model.trim="nomeBuscadoInput"
                     type="text"
                     id="pesquisar"
                     class="form-control">
 
+                    <ul v-if="nomeBuscadoInput.length > 0" class="list-group position-absolute">
+                      <li
+                        v-for="item in elementosBusca"
+                        :value="item.valor"
+                        @click="buscarUsuarioCategoria($event)"
+                        :key="item"
+                        class="list-group-item">{{ item.texto }}{{ nomeBuscadoInput }}
+                      </li>
+                    </ul>
                 </div>
 
                 <div class="col">
@@ -32,6 +42,11 @@
                     </button>
 
                 </div>
+
+                <div class="total_livros mt-5">
+                  <p class="fs-5 mb-0">Total de usuários cadastrados: {{ usuarios.length }}</p>
+              </div>
+
             </div>
         </form>
         </div>
@@ -252,7 +267,7 @@ export default {
 
   setup () {
     let usuarios = JSON.parse(localStorage.getItem('usuarios'))
-    const nomeBuscadoInput = ref(null)
+    const nomeBuscadoInput = ref('')
     const editButton = ref(null)
 
     if (usuarios === null) {
@@ -264,6 +279,15 @@ export default {
     const novoCPF = ref('')
     const novoEndereco = ref('')
     const novoCPFSemMascara = ref({})
+
+    const elementosBusca = ref(
+      [
+        {valor: 'nome', texto: 'Procurar nome por: '},
+        {valor: 'usuario', texto: 'Procurar usuário por: '},
+        {valor: 'cpf', texto: 'Procurar cpf por: '},
+        {valor: 'endereco', texto: 'Procurar endereço por: '},
+      ]
+    )
 
     const mensagemAlerta = ref('')
 
@@ -296,8 +320,66 @@ export default {
       pagina.value = numeroPagina
     }
 
+    function buscarUsuarioCategoria (event) {
+      const busca = removeAcentos(nomeBuscadoInput.value).toLowerCase()
+      const usuariosListados = []
+      nomeBuscadoInput.value = ''
+
+      if (busca === '') {
+        todosUsuarios.value = usuarios
+
+      } else {
+
+        for (const usuario of usuarios) {
+
+          switch (event.target._value) {
+
+            case 'nome':
+              const nomeNormalize = removeAcentos(usuario.nome).toLowerCase()
+
+              if (nomeNormalize.includes(busca) && busca !== '') {
+                usuariosListados.push(usuario)
+                todosUsuarios.value = usuariosListados
+              }
+
+              break
+
+            case 'usuario':
+              const usuarioNormalize = removeAcentos(usuario.usuario).toLowerCase()
+
+              if (usuarioNormalize.includes(busca) && busca !== '') {
+                usuariosListados.push(usuario)
+                todosUsuarios.value = usuariosListados
+              }
+
+              break
+
+            case 'cpf':
+              const cpfNormalize = usuario.cpf.replaceAll('.', '').replaceAll('-', '')
+              const buscaSemPonto = busca.replaceAll('.', '').replaceAll('-', '')
+
+              if (cpfNormalize === buscaSemPonto) {
+                todosUsuarios.value = [usuario]
+              }
+
+              break
+
+            case 'endereco':
+              const enderecoNormalize = removeAcentos(usuario.endereco).toLowerCase()
+
+              if (enderecoNormalize.includes(busca) && busca !== '') {
+                usuariosListados.push(usuario)
+                todosUsuarios.value = usuariosListados
+              }
+
+              break
+          }
+        }
+      }
+    }
+
     function buscarUsuario () {
-      const nomeBuscado = nomeBuscadoInput.value.value
+      const nomeBuscado = nomeBuscadoInput.value
 
       if (nomeBuscado === '') {
         todosUsuarios.value = usuarios
@@ -415,6 +497,7 @@ export default {
     return {
       usuarios,
       nomeBuscadoInput,
+      elementosBusca,
       editButton,
       novoNome,
       novoUser,
@@ -434,7 +517,8 @@ export default {
       proxPagina,
       antecessorPagina,
       irPagina,
-      salvarUsuarioEditado
+      salvarUsuarioEditado,
+      buscarUsuarioCategoria
     }
   }
 }

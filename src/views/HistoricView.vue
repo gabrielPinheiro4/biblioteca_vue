@@ -1,6 +1,30 @@
 <template>
   <div class="historico container py-5">
-    <table class="table">
+    <form action="">
+      <div class="row align-items-end">
+        <div class="col">
+          <label for="pesquisaHistorico">Pesquisar</label>
+
+          <input
+          autocomplete="off"
+          v-model.trim="pesquisaInputHistorico"
+          type="text" id="pesquisaHistorico"
+          class="form-control">
+
+          <ul v-if="pesquisaInputHistorico.length > 0"class="list-group position-absolute">
+            <li
+              v-for="item in elementosBusca"
+              :value="item.valor"
+              @click="pesquisarHistorico($event)"
+              :key="item"
+              class="list-group-item">{{ item.texto }}{{ pesquisaInputHistorico }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </form>
+
+    <table class="table mt-5">
       <thead>
         <tr>
           <th scope="col">Função Realizada</th>
@@ -13,7 +37,7 @@
       </thead>
 
       <tbody>
-        <tr v-for="historico in historicos" :key="historico">
+        <tr v-for="historico in todosHistoricos" :key="historico">
           <td>{{historico.metodo}}</td>
 
           <td v-if="historico.usuarioLivro.hasOwnProperty('nome')">
@@ -80,18 +104,60 @@
 </template>
 
 <script>
+/* eslint-disable */
+import { removeAcentos } from '@/funcoes'
+import { ref } from 'vue'
+
 export default {
   name: 'HistoricView',
-
+  
   setup () {
     let historicos = JSON.parse(localStorage.getItem('historico'))
+    const todosHistoricos = ref(historicos)
+    const pesquisaInputHistorico = ref('')
 
+    const elementosBusca = ref(
+      [
+        {valor: 'usuario', texto: 'Procurar usuário por: '},
+        {valor: 'livro', texto: 'Procurar livro por: '}
+      ]
+    )
+    
     if (historicos === null) {
       historicos = []
     }
 
+    function pesquisarHistorico (event) {
+      const busca = removeAcentos(pesquisaInputHistorico.value).toLowerCase()
+      const historicoBuscado = []
+
+      if (busca === '') {
+        todosHistoricos.value = historicos
+
+      } else {
+        for (const historico of historicos) {
+
+          switch (event.target._value) {
+
+            case 'usuario':
+
+              if (historico.usuarioLivro.hasOwnProperty('usuario')) {
+                const userNormalize = removeAcentos(historico.usuarioLivro.usuario).toLowerCase()
+
+                console.log(userNormalize)
+              }
+          }
+        }
+      }
+
+    }
+
     return {
-      historicos
+      historicos,
+      pesquisaInputHistorico,
+      todosHistoricos,
+      elementosBusca,
+      pesquisarHistorico
     }
   }
 }
