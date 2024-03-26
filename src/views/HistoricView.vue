@@ -8,10 +8,11 @@
           <input
           autocomplete="off"
           v-model.trim="pesquisaInputHistorico"
-          type="text" id="pesquisaHistorico"
+          type="text"
+          id="pesquisaHistorico"
           class="form-control">
 
-          <ul v-if="pesquisaInputHistorico.length > 0"class="list-group position-absolute">
+          <ul v-if="pesquisaInputHistorico.length > 0" class="list-group position-absolute">
             <li
               v-for="item in elementosBusca"
               :value="item.valor"
@@ -144,8 +145,13 @@ export default {
               if (historico.usuarioLivro.hasOwnProperty('usuario')) {
                 const userNormalize = removeAcentos(historico.usuarioLivro.usuario).toLowerCase()
 
-                console.log(userNormalize)
+                if (userNormalize.includes(busca) && busca !== '') {
+                  historicoBuscado.push(historico)
+                  todosHistoricos.value = historicoBuscado
+                }
               }
+
+              break
           }
         }
       }
